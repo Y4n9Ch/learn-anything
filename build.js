@@ -11,7 +11,7 @@ const runTsc = (args = []) => {
   execFileSync(process.execPath, [tscPath, ...args], { stdio: 'inherit' });
 };
 
-console.log('Building DeepLearn...\n');
+console.log('Building Learn Anything...\n');
 
 if (existsSync('dist')) {
   console.log('Cleaning dist directory...');

@@ -2,9 +2,9 @@ import type { WorkflowMessages } from '../../../types.js';
 
 export const explain: WorkflowMessages = {
   skill: {
-    name: 'deeplearn-explain',
+    name: 'learn-anything-explain',
     description: '递归式深度学习一个概念。AI 讲解概念，识别更深层的子话题，让你自主选择深入方向。',
-    instructions: `你是 DeepLearn 的讲解导师。你擅长将一个复杂概念用简单、清晰的语言讲解清楚。
+    instructions: `你是 Learn Anything 的讲解导师。你擅长将一个复杂概念用简单、清晰的语言讲解清楚。
 你的讲解遵循"递归学习法"：先建立理解基础，再识别更深的子话题，让用户自主选择是否深入。
 
 ## 你的教学哲学
@@ -22,14 +22,14 @@ export const explain: WorkflowMessages = {
 ### 第一步：加载上下文
 
 1. **匹配主题**：从概念名推断所属主题。
-   - 查看 \`~/.learn/topics/\` 下的所有目录
+   - 查看 \`./.learn/topics/\` 下的所有目录
    - 如果只有一个主题，直接使用
    - 如果有多个主题，在知识图谱中搜索概念名，找到包含该概念的主题
    - 如果找不到匹配的主题，询问用户 "你想在哪个主题下学习这个概念？可用的主题：[列表]"
 
-2. **读取知识图谱**：使用 Read 工具读取 \`~/.learn/topics/<主题名>/knowledge-map.md\`，定位该概念在整个知识树中的位置。
+2. **读取知识图谱**：使用 Read 工具读取 \`./.learn/topics/<主题名>/knowledge-map.md\`，定位该概念在整个知识树中的位置。
 
-3. **读取学习状态**：使用 Read 工具读取 \`~/.learn/topics/<主题名>/state.yaml\`，找到该概念的当前状态。
+3. **读取学习状态**：使用 Read 工具读取 \`./.learn/topics/<主题名>/state.yaml\`，找到该概念的当前状态。
 
 ### 第二步：评估用户水平
 
@@ -117,7 +117,7 @@ export const explain: WorkflowMessages = {
 
 ### 第五步：记录学习会话
 
-在每个讲解结束后，将会话记录追加到 \`~/.learn/topics/<主题名>/sessions/YYYY-MM-DD.md\`：
+在每个讲解结束后，将会话记录追加到 \`./.learn/topics/<主题名>/sessions/YYYY-MM-DD.md\`：
 
 \`\`\`markdown
 # 学习会话 - <日期>
@@ -175,7 +175,7 @@ export const explain: WorkflowMessages = {
   command: {
     name: 'Learn: Explain',
     description: '递归式深度学习一个概念 — AI 讲解、引导思考、自主深入',
-    content: `请使用 deeplearn-explain skill 处理用户的 /learn-explain <概念名> 请求。
+    content: `请使用 learn-anything-explain skill 处理用户的 /learn-explain <概念名> 请求。
 按照 skill 中定义的工作流执行：
 1. 加载上下文：匹配主题 → 读取知识图谱 → 读取学习状态
 2. 评估用户水平（初级/中级/高级）并调整讲解策略

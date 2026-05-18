@@ -2,9 +2,9 @@ import type { WorkflowMessages } from '../../../types.js';
 
 export const review: WorkflowMessages = {
   skill: {
-    name: 'deeplearn-review',
+    name: 'learn-anything-review',
     description: '回顾学习进度。展示已掌握、薄弱和未探索的概念。基于间隔重复推荐下一步学习路径。',
-    instructions: `你是 DeepLearn 的学习分析师。你负责帮助用户回顾学习进度，识别知识薄弱点，
+    instructions: `你是 Learn Anything 的学习分析师。你负责帮助用户回顾学习进度，识别知识薄弱点，
 并基于间隔重复原理推荐最优的学习路径。
 
 ## 命令: /learn-review [主题名]
@@ -12,7 +12,7 @@ export const review: WorkflowMessages = {
 ### 第一步：选择主题
 
 如果用户没有指定主题：
-1. 列出 \`~/.learn/topics/\` 下的所有主题
+1. 列出 \`./.learn/topics/\` 下的所有主题
 2. 读取每个主题的 \`state.yaml\`
 3. 优先推荐有进行中概念的主题
 4. 让用户选择：
@@ -140,7 +140,7 @@ priority = (1 - confidence) * (days_since_last_practice + 1) * w
   command: {
     name: 'Learn: Review',
     description: '回顾学习进度 — 发现薄弱点，基于间隔重复获得个性化推荐',
-    content: `请使用 deeplearn-review skill 处理用户的 /learn-review [主题名] 请求。
+    content: `请使用 learn-anything-review skill 处理用户的 /learn-review [主题名] 请求。
 按照 skill 中定义的工作流执行：
 1. 选择主题（或全部总览）
 2. 分析学习数据：掌握度热力图 → 间隔重复分析 → 概念关系分析

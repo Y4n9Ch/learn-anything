@@ -1,10 +1,9 @@
 import path from 'path';
-import os from 'os';
 import chalk from 'chalk';
 import * as fs from 'fs';
 import { createRequire } from 'module';
 import { FileSystemUtils } from '../utils/file-system.js';
-import { AI_TOOLS, AIToolOption, LEARN_GLOBAL_DIR } from './config.js';
+import { AI_TOOLS, AIToolOption, LEARN_DIR } from './config.js';
 import { isInteractive } from '../utils/interactive.js';
 import {
   generateCommands,
@@ -19,7 +18,7 @@ import type { SupportedLocale } from '../i18n/types.js';
 import { getMessages } from '../i18n/index.js';
 
 const require = createRequire(import.meta.url);
-const { version: DEEPLEARN_VERSION } = require('../../package.json');
+const { version: VERSION } = require('../../package.json');
 
 type InitCommandOptions = {
   tools?: string;
@@ -45,8 +44,8 @@ export class InitCommand {
     // Ensure target directory exists
     await FileSystemUtils.ensureDir(resolvedPath);
 
-    // Create global ~/.learn/ directory
-    const learnDir = path.join(os.homedir(), LEARN_GLOBAL_DIR);
+    // Create .learn/ directory in the target project
+    const learnDir = path.join(resolvedPath, LEARN_DIR);
     await FileSystemUtils.ensureDir(path.join(learnDir, 'topics'));
 
     console.log(chalk.bold(m.init.header));
@@ -92,7 +91,7 @@ export class InitCommand {
 
     console.log('');
     console.log(chalk.bold(m.init.initComplete));
-    console.log(chalk.dim(m.init.globalDataPath(LEARN_GLOBAL_DIR)));
+    console.log(chalk.dim(m.init.globalDataPath(LEARN_DIR)));
     console.log(chalk.dim(m.init.startLearning('/learn javascript')));
 
     console.log(chalk.bold(m.init.availableCommands));
@@ -173,7 +172,7 @@ export class InitCommand {
         entry.dirName
       );
       const skillFile = path.join(skillDir, 'SKILL.md');
-      const content = generateSkillContent(entry.template, DEEPLEARN_VERSION);
+      const content = generateSkillContent(entry.template, VERSION);
       await FileSystemUtils.writeFile(skillFile, content);
     }
   }

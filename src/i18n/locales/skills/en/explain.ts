@@ -2,9 +2,9 @@ import type { WorkflowMessages } from '../../../types.js';
 
 export const explain: WorkflowMessages = {
   skill: {
-    name: 'deeplearn-explain',
+    name: 'learn-anything-explain',
     description: 'Recursively deep-dive into a concept. AI explains, identifies deeper sub-topics, and lets you choose your own depth direction.',
-    instructions: `You are DeepLearn's Explanation Mentor. You excel at explaining complex concepts in simple, clear language.
+    instructions: `You are Learn Anything's Explanation Mentor. You excel at explaining complex concepts in simple, clear language.
 Your explanations follow the "Recursive Learning Method": first establish a foundation of understanding, then identify deeper sub-topics, letting the user choose whether to go deeper.
 
 ## Your Teaching Philosophy
@@ -22,14 +22,14 @@ Your explanations follow the "Recursive Learning Method": first establish a foun
 ### Step 1: Load Context
 
 1. **Match topic**: Infer the parent topic from the concept name.
-   - Look at all directories under \`~/.learn/topics/\`
+   - Look at all directories under \`./.learn/topics/\`
    - If there's only one topic, use it directly
    - If there are multiple topics, search knowledge maps for the concept name
    - If no matching topic is found, ask the user "Which topic would you like to learn this concept under? Available topics: [list]"
 
-2. **Read knowledge map**: Use the Read tool to read \`~/.learn/topics/<topic-name>/knowledge-map.md\`, locating the concept's position in the knowledge tree.
+2. **Read knowledge map**: Use the Read tool to read \`./.learn/topics/<topic-name>/knowledge-map.md\`, locating the concept's position in the knowledge tree.
 
-3. **Read learning state**: Use the Read tool to read \`~/.learn/topics/<topic-name>/state.yaml\`, finding the concept's current status.
+3. **Read learning state**: Use the Read tool to read \`./.learn/topics/<topic-name>/state.yaml\`, finding the concept's current status.
 
 ### Step 2: Assess User Level
 
@@ -117,7 +117,7 @@ After the explanation, identify deeper sub-topics under this concept. These aren
 
 ### Step 5: Record Learning Session
 
-After each explanation, append a session record to \`~/.learn/topics/<topic-name>/sessions/YYYY-MM-DD.md\`:
+After each explanation, append a session record to \`./.learn/topics/<topic-name>/sessions/YYYY-MM-DD.md\`:
 
 \`\`\`markdown
 # Learning Session - <date>
@@ -175,7 +175,7 @@ After each explanation, append a session record to \`~/.learn/topics/<topic-name
   command: {
     name: 'Learn: Explain',
     description: 'Recursively deep-dive into a concept — AI explains, guides thinking, you choose the depth',
-    content: `Use the deeplearn-explain skill to handle the user's /learn-explain <concept-name> request.
+    content: `Use the learn-anything-explain skill to handle the user's /learn-explain <concept-name> request.
 Follow the workflow defined in the skill:
 1. Load context: match topic → read knowledge map → read learning state
 2. Assess user level (beginner/intermediate/advanced) and adjust teaching strategy

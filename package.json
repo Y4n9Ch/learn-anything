@@ -1,9 +1,9 @@
 {
-  "name": "deeplearn",
+  "name": "learn-anything",
   "version": "0.1.0",
   "description": "AI-powered recursive learning system with Socratic method and TDD practice",
   "keywords": [
-    "deeplearn",
+    "learn-anything",
     "learning",
     "cli",
     "ai",
@@ -11,10 +11,10 @@
     "socratic",
     "tdd"
   ],
-  "homepage": "https://github.com/chenyaqi/DeepLearn",
+  "homepage": "https://github.com/chenyaqi/learn-anything",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chenyaqi/DeepLearn"
+    "url": "https://github.com/chenyaqi/learn-anything"
   },
   "license": "MIT",
   "author": "yaqi chen",
@@ -29,7 +29,7 @@
     }
   },
   "bin": {
-    "deeplearn": "./bin/deeplearn.js"
+    "learn-anything": "./bin/learn-anything.js"
   },
   "files": [
     "dist",
@@ -41,7 +41,7 @@
   "scripts": {
     "build": "node build.js",
     "dev": "tsc --watch",
-    "dev:cli": "pnpm build && node bin/deeplearn.js",
+    "dev:cli": "pnpm build && node bin/learn-anything.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint src/",

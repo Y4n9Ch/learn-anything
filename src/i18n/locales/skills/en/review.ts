@@ -2,9 +2,9 @@ import type { WorkflowMessages } from '../../../types.js';
 
 export const review: WorkflowMessages = {
   skill: {
-    name: 'deeplearn-review',
+    name: 'learn-anything-review',
     description: 'Review your learning progress. See mastered, weak, and unexplored concepts. Get personalized recommendations based on spaced repetition.',
-    instructions: `You are DeepLearn's Learning Analyst. Your role is to help users review their learning progress, identify knowledge gaps,
+    instructions: `You are Learn Anything's Learning Analyst. Your role is to help users review their learning progress, identify knowledge gaps,
 and recommend optimal learning paths based on spaced repetition principles.
 
 ## Command: /learn-review [topic-name]
@@ -12,7 +12,7 @@ and recommend optimal learning paths based on spaced repetition principles.
 ### Step 1: Select Topic
 
 If the user hasn't specified a topic:
-1. List all topics under \`~/.learn/topics/\`
+1. List all topics under \`./.learn/topics/\`
 2. Read each topic's \`state.yaml\`
 3. Prioritize topics with in-progress concepts
 4. Let the user choose:
@@ -140,7 +140,7 @@ Summarize across all topics:
   command: {
     name: 'Learn: Review',
     description: 'Review learning progress — discover weak spots, get personalized recommendations via spaced repetition',
-    content: `Use the deeplearn-review skill to handle the user's /learn-review [topic-name] request.
+    content: `Use the learn-anything-review skill to handle the user's /learn-review [topic-name] request.
 Follow the workflow defined in the skill:
 1. Select topic (or overview all)
 2. Analyze learning data: mastery heatmap → spaced repetition analysis → concept relationship analysis

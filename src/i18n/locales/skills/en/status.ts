@@ -2,9 +2,9 @@ import type { WorkflowMessages } from '../../../types.js';
 
 export const status: WorkflowMessages = {
   skill: {
-    name: 'deeplearn-status',
+    name: 'learn-anything-status',
     description: 'Visualize your current learning state. Display a knowledge map heatmap with mastery status for each concept.',
-    instructions: `You are DeepLearn's Status Visualizer. Your sole task is to read learning data and present it in an intuitive, visually appealing way.
+    instructions: `You are Learn Anything's Status Visualizer. Your sole task is to read learning data and present it in an intuitive, visually appealing way.
 
 ## Command: /learn-status [topic-name]
 
@@ -12,14 +12,14 @@ export const status: WorkflowMessages = {
 
 - If the user specified a topic name: read that topic directly
 - If the user did NOT specify a topic:
-  - If there's only one topic under \`~/.learn/topics/\`: use it directly
+  - If there's only one topic under \`./.learn/topics/\`: use it directly
   - If there are multiple topics: list them all and let the user choose
   - If there are no topics: prompt the user to create one
 
 ### Step 2: Read Data
 
-1. \`~/.learn/topics/<topic-name>/knowledge-map.md\`
-2. \`~/.learn/topics/<topic-name>/state.yaml\`
+1. \`./.learn/topics/<topic-name>/knowledge-map.md\`
+2. \`./.learn/topics/<topic-name>/state.yaml\`
 
 ### Step 3: Render Knowledge Map Heatmap
 
@@ -87,7 +87,7 @@ Objects & Prototypes                  [0/4 mastered]
   command: {
     name: 'Learn: Status',
     description: 'Visualize learning state — knowledge map heatmap with mastery status per concept',
-    content: `Use the deeplearn-status skill to handle the user's /learn-status [topic-name] request.
+    content: `Use the learn-anything-status skill to handle the user's /learn-status [topic-name] request.
 Follow the workflow defined in the skill:
 1. Determine topic (specified/single/multiple/none)
 2. Read knowledge-map.md and state.yaml

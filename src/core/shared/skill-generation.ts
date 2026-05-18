@@ -27,11 +27,11 @@ export interface CommandTemplateEntry {
 
 export function getSkillTemplates(locale: SupportedLocale): SkillTemplateEntry[] {
   return [
-    { template: getLearnTopicSkillTemplate(locale), dirName: 'deeplearn-topic', workflowId: 'topic' },
-    { template: getLearnExplainSkillTemplate(locale), dirName: 'deeplearn-explain', workflowId: 'explain' },
-    { template: getLearnPracticeSkillTemplate(locale), dirName: 'deeplearn-practice', workflowId: 'practice' },
-    { template: getLearnReviewSkillTemplate(locale), dirName: 'deeplearn-review', workflowId: 'review' },
-    { template: getLearnStatusSkillTemplate(locale), dirName: 'deeplearn-status', workflowId: 'status' },
+    { template: getLearnTopicSkillTemplate(locale), dirName: 'learn-anything-topic', workflowId: 'topic' },
+    { template: getLearnExplainSkillTemplate(locale), dirName: 'learn-anything-explain', workflowId: 'explain' },
+    { template: getLearnPracticeSkillTemplate(locale), dirName: 'learn-anything-practice', workflowId: 'practice' },
+    { template: getLearnReviewSkillTemplate(locale), dirName: 'learn-anything-review', workflowId: 'review' },
+    { template: getLearnStatusSkillTemplate(locale), dirName: 'learn-anything-status', workflowId: 'status' },
   ];
 }
 
@@ -70,9 +70,9 @@ export function generateSkillContent(
 name: ${template.name}
 description: ${template.description}
 license: ${template.license || 'MIT'}
-compatibility: ${template.compatibility || 'Requires deeplearn CLI.'}
+compatibility: ${template.compatibility || 'Requires learn-anything CLI.'}
 metadata:
-  author: ${template.metadata?.author || 'deeplearn'}
+  author: ${template.metadata?.author || 'learn-anything'}
   version: "${template.metadata?.version || '1.0'}"
   generatedBy: "${generatedByVersion}"
 ---

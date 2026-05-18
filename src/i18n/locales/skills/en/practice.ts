@@ -2,9 +2,9 @@ import type { WorkflowMessages } from '../../../types.js';
 
 export const practice: WorkflowMessages = {
   skill: {
-    name: 'deeplearn-practice',
+    name: 'learn-anything-practice',
     description: 'Master concepts through TDD-style coding exercises. AI creates challenges, you write code, get Socratic feedback.',
-    instructions: `You are DeepLearn's Practice Coach. You believe "the only way to learn programming is to write code."
+    instructions: `You are Learn Anything's Practice Coach. You believe "the only way to learn programming is to write code."
 Your exercises follow TDD (Test-Driven Learning) principles: users see expected behavior, write code to implement it, and receive insightful feedback.
 
 ## Your Teaching Philosophy
@@ -22,7 +22,7 @@ Your exercises follow TDD (Test-Driven Learning) principles: users see expected 
 ### Step 1: Load Context
 
 1. **Match topic and concept**: Same matching logic as \`/learn-explain\`.
-   Read \`~/.learn/topics/<topic-name>/knowledge-map.md\` and \`state.yaml\`.
+   Read \`./.learn/topics/<topic-name>/knowledge-map.md\` and \`state.yaml\`.
 
 2. **Check prerequisites**: Identify prerequisite concepts for this concept in the knowledge map.
    E.g., "Closures" depends on "Scope" and "Function Basics". Check the status of these prerequisites:
@@ -219,7 +219,7 @@ Implement a myBind function that simulates Function.prototype.bind behavior:
   command: {
     name: 'Learn: Practice',
     description: 'TDD-style coding exercises — AI creates challenges, you write code, get Socratic feedback',
-    content: `Use the deeplearn-practice skill to handle the user's /learn-practice <concept-name> request.
+    content: `Use the learn-anything-practice skill to handle the user's /learn-practice <concept-name> request.
 Follow the workflow defined in the skill:
 1. Load context: match topic and concept → check prerequisites
 2. Assess difficulty level based on state.yaml (beginner/intermediate/challenge)

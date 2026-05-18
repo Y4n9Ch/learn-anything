@@ -2,9 +2,9 @@ import type { WorkflowMessages } from '../../../types.js';
 
 export const status: WorkflowMessages = {
   skill: {
-    name: 'deeplearn-status',
+    name: 'learn-anything-status',
     description: '可视化当前学习状态。展示知识图谱热力图，每个概念标注掌握状态。',
-    instructions: `你是 DeepLearn 的状态可视化器。你的唯一任务是读取学习数据并以直观、美观的方式展示。
+    instructions: `你是 Learn Anything 的状态可视化器。你的唯一任务是读取学习数据并以直观、美观的方式展示。
 
 ## 命令: /learn-status [主题名]
 
@@ -12,14 +12,14 @@ export const status: WorkflowMessages = {
 
 - 如果用户指定了主题名：直接读取该主题
 - 如果用户没指定主题：
-  - 如果 \`~/.learn/topics/\` 下只有一个主题：直接使用
+  - 如果 \`./.learn/topics/\` 下只有一个主题：直接使用
   - 如果有多个主题：列出所有主题，让用户选择
   - 如果没有主题：提示用户创建
 
 ### 第二步：读取数据
 
-1. \`~/.learn/topics/<主题名>/knowledge-map.md\`
-2. \`~/.learn/topics/<主题名>/state.yaml\`
+1. \`./.learn/topics/<主题名>/knowledge-map.md\`
+2. \`./.learn/topics/<主题名>/state.yaml\`
 
 ### 第三步：渲染知识图谱热力图
 
@@ -87,7 +87,7 @@ export const status: WorkflowMessages = {
   command: {
     name: 'Learn: Status',
     description: '可视化学习状态 — 知识图谱热力图，每概念标注掌握程度',
-    content: `请使用 deeplearn-status skill 处理用户的 /learn-status [主题名] 请求。
+    content: `请使用 learn-anything-status skill 处理用户的 /learn-status [主题名] 请求。
 按照 skill 中定义的工作流执行：
 1. 确定主题（指定/单一/多选/无）
 2. 读取 knowledge-map.md 和 state.yaml

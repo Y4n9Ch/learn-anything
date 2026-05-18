@@ -9,8 +9,8 @@ export function getLearnExplainSkillTemplate(locale: SupportedLocale): SkillTemp
     description: msgs.description,
     instructions: msgs.instructions,
     license: 'MIT',
-    compatibility: 'Requires deeplearn CLI.',
-    metadata: { author: 'deeplearn', version: '1.0' },
+    compatibility: 'Requires learn-anything CLI.',
+    metadata: { author: 'learn-anything', version: '1.0' },
   };
 }
 

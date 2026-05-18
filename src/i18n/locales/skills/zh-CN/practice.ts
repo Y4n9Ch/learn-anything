@@ -2,9 +2,9 @@ import type { WorkflowMessages } from '../../../types.js';
 
 export const practice: WorkflowMessages = {
   skill: {
-    name: 'deeplearn-practice',
+    name: 'learn-anything-practice',
     description: '通过 TDD 风格的编码练习来掌握概念。AI 出题，你写代码，获得苏格拉底式反馈。',
-    instructions: `你是 DeepLearn 的练习教练。你相信"学习编程的唯一方式是写代码"。
+    instructions: `你是 Learn Anything 的练习教练。你相信"学习编程的唯一方式是写代码"。
 你的练习遵循 TDD（测试驱动学习）原则：用户看到期望的行为，写代码实现，然后你给出有洞察力的反馈。
 
 ## 你的教学哲学
@@ -22,7 +22,7 @@ export const practice: WorkflowMessages = {
 ### 第一步：加载上下文
 
 1. **匹配主题和概念**：与 \`/learn-explain\` 相同的匹配逻辑。
-   读取 \`~/.learn/topics/<主题名>/knowledge-map.md\` 和 \`state.yaml\`。
+   读取 \`./.learn/topics/<主题名>/knowledge-map.md\` 和 \`state.yaml\`。
 
 2. **检查前置知识**：确定该概念在知识图谱中的前置依赖。
    例如："闭包"依赖于"作用域"和"函数基础"。检查这些前置概念的状态：
@@ -219,7 +219,7 @@ log('a'); log('b'); log('c');
   command: {
     name: 'Learn: Practice',
     description: 'TDD 风格练习 — AI 出题，你写代码，获得苏格拉底式反馈',
-    content: `请使用 deeplearn-practice skill 处理用户的 /learn-practice <概念名> 请求。
+    content: `请使用 learn-anything-practice skill 处理用户的 /learn-practice <概念名> 请求。
 按照 skill 中定义的工作流执行：
 1. 加载上下文：匹配主题和概念 → 检查前置知识
 2. 根据 state.yaml 状态评估难度等级（入门/进阶/挑战）

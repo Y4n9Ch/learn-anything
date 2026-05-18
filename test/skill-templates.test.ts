@@ -49,9 +49,9 @@ describe('Skill Templates', () => {
     const content = generateSkillContent(template, '0.1.0');
 
     expect(content).toContain('---');
-    expect(content).toContain('name: deeplearn-explain');
+    expect(content).toContain('name: learn-anything-explain');
     expect(content).toContain('generatedBy: "0.1.0"');
-    expect(content).toContain('DeepLearn');
+    expect(content).toContain('Learn Anything');
   });
 
   it('should generate English SKILL.md content when en locale is passed', () => {
@@ -59,15 +59,15 @@ describe('Skill Templates', () => {
     const content = generateSkillContent(template, '0.1.0');
 
     expect(content).toContain('---');
-    expect(content).toContain('name: deeplearn-explain');
-    expect(content).toContain('You are DeepLearn');
+    expect(content).toContain('name: learn-anything-explain');
+    expect(content).toContain('You are Learn Anything');
   });
 
   it('should generate Chinese SKILL.md content when zh-CN locale is passed', () => {
     const template = getLearnExplainSkillTemplate('zh-CN');
     const content = generateSkillContent(template, '0.1.0');
 
-    expect(content).toContain('你是 DeepLearn 的讲解导师');
+    expect(content).toContain('你是 Learn Anything 的讲解导师');
   });
 });
 
@@ -112,8 +112,8 @@ describe('Command Generation', () => {
 
     const topicContent = getCommandContents(L)[0];
     const cmd = generateCommand(topicContent, adapter!);
-    expect(cmd.path).toContain('.cursor/commands/deeplearn-topic.md');
-    expect(cmd.fileContent).toContain('/deeplearn-topic');
+    expect(cmd.path).toContain('.cursor/commands/learn-anything-topic.md');
+    expect(cmd.fileContent).toContain('/learn-anything-topic');
   });
 
   it('should generate Codex command files with absolute paths', () => {
@@ -122,7 +122,7 @@ describe('Command Generation', () => {
 
     const topicContent = getCommandContents(L)[0];
     const cmd = generateCommand(topicContent, adapter!);
-    expect(cmd.path).toContain('.codex/prompts/deeplearn-topic.md');
+    expect(cmd.path).toContain('.codex/prompts/learn-anything-topic.md');
   });
 
   it('should generate Gemini command files in TOML format', () => {
@@ -144,7 +144,7 @@ describe('Skill Template Content Quality', () => {
     expect(t.instructions).toContain('苏格拉底');
     expect(t.instructions).toContain('递归');
     expect(t.instructions).toContain('70%讲解');
-    expect(t.instructions).toContain('~/.learn/topics/');
+    expect(t.instructions).toContain('./.learn/topics/');
   });
 
   it('practice template should include TDD guidance', () => {

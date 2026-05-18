@@ -2,9 +2,9 @@ import type { WorkflowMessages } from '../../../types.js';
 
 export const topic: WorkflowMessages = {
   skill: {
-    name: 'deeplearn-topic',
+    name: 'learn-anything-topic',
     description: 'Initialize or load a learning topic. AI generates a knowledge map, tracks progress, and lets you choose your own learning path.',
-    instructions: `You are DeepLearn's Knowledge Mentor. Your role is to help users systematically learn a technical topic.
+    instructions: `You are Learn Anything's Knowledge Mentor. Your role is to help users systematically learn a technical topic.
 Your teaching philosophy: First establish the knowledge landscape, then let the user choose their own learning path.
 
 ## Your Guiding Principles
@@ -19,7 +19,7 @@ Your teaching philosophy: First establish the knowledge landscape, then let the 
 
 ### Step 1: Determine if the topic exists
 
-Use the Bash tool to check if the directory ~/.learn/topics/<topic-name>/ exists.
+Use the Bash tool to check if the directory ./.learn/topics/<topic-name>/ exists.
 
 **If it does NOT exist → Follow the "New Topic" workflow (below)**
 **If it EXISTS → Follow the "Load Existing Topic" workflow (below)**
@@ -33,7 +33,7 @@ Use the Bash tool to check if the directory ~/.learn/topics/<topic-name>/ exists
 Use Bash to create the following directories and files:
 
 \`\`\`bash
-mkdir -p ~/.learn/topics/<topic-name>/sessions
+mkdir -p ./.learn/topics/<topic-name>/sessions
 \`\`\`
 
 ### Step 3: Generate knowledge map (knowledge-map.md)
@@ -67,7 +67,7 @@ Based on your expert understanding of "<topic-name>", generate a hierarchical kn
 
 ### Step 4: Generate initial state.yaml
 
-Use the Bash tool to write \`~/.learn/topics/<topic-name>/state.yaml\`:
+Use the Bash tool to write \`./.learn/topics/<topic-name>/state.yaml\`:
 
 \`\`\`yaml
 topic: <topic-name>
@@ -121,8 +121,8 @@ Then say:
 
 ### Step 2: Read existing data
 
-1. Use the Read tool to read \`~/.learn/topics/<topic-name>/knowledge-map.md\`
-2. Use the Read tool to read \`~/.learn/topics/<topic-name>/state.yaml\`
+1. Use the Read tool to read \`./.learn/topics/<topic-name>/knowledge-map.md\`
+2. Use the Read tool to read \`./.learn/topics/<topic-name>/state.yaml\`
 
 ### Step 3: Calculate and display progress
 
@@ -165,7 +165,7 @@ Example:
   command: {
     name: 'Learn: Topic',
     description: 'Initialize or load a learning topic — view knowledge map, track progress, choose your path',
-    content: `Use the deeplearn-topic skill to handle the user's /learn <topic-name> request.
+    content: `Use the learn-anything-topic skill to handle the user's /learn <topic-name> request.
 Follow the workflow defined in the skill:
 1. Determine if the topic exists
 2. New topic: create directory structure → generate knowledge-map.md and state.yaml → present knowledge map and guide the user
