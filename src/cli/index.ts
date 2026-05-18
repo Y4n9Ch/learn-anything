@@ -4,10 +4,17 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import chalk from 'chalk';
 import { AI_TOOLS } from '../core/config.js';
+import { resolveLocale } from '../i18n/index.js';
+import { getMessages } from '../i18n/index.js';
 
 const program = new Command();
 const require = createRequire(import.meta.url);
 const { version } = require('../../package.json');
+
+// Parse --lang early from process.argv so we can localize static descriptions
+const langIdx = process.argv.indexOf('--lang');
+const earlyLocale = langIdx !== -1 ? resolveLocale(process.argv[langIdx + 1]) : resolveLocale();
+const m = getMessages(earlyLocale);
 
 program
   .name('deeplearn')
@@ -17,29 +24,31 @@ program
 const availableToolIds = AI_TOOLS.filter((tool) => tool.skillsDir).map(
   (tool) => tool.value
 );
-const toolsOptionDescription = `指定 AI 工具（非交互模式）。使用 "all"、"none"，或逗号分隔的工具列表：${availableToolIds.join(', ')}`;
 
 program
   .command('init [path]')
-  .description('在当前项目初始化 DeepLearn 学习技能')
-  .option('--tools <tools>', toolsOptionDescription)
-  .option('--force', '跳过确认提示')
-  .action(async (targetPath = '.', options?: { tools?: string; force?: boolean }) => {
+  .description(m.cli.initCommandDescription)
+  .option('--tools <tools>', m.cli.toolsOptionDescription(availableToolIds.join(', ')))
+  .option('--force', m.cli.forceOption)
+  .option('--lang <locale>', m.cli.langOption)
+  .action(async (targetPath = '.', options?: { tools?: string; force?: boolean; lang?: string }) => {
+    const cliLocale = resolveLocale(options?.lang);
+    const mc = cliLocale !== earlyLocale ? getMessages(cliLocale).cli : m.cli;
     try {
       const resolvedPath = path.resolve(targetPath);
 
       try {
         const stats = await fs.stat(resolvedPath);
         if (!stats.isDirectory()) {
-          throw new Error(`路径 "${targetPath}" 不是一个目录`);
+          throw new Error(mc.notDirectory(targetPath));
         }
       } catch (error: any) {
         if (error.code === 'ENOENT') {
-          console.log(chalk.yellow(`目录 "${targetPath}" 不存在，将自动创建。`));
+          console.log(chalk.yellow(mc.dirNotExist(targetPath)));
         } else if (error.message && error.message.includes('not a directory')) {
           throw error;
         } else {
-          throw new Error(`无法访问路径 "${targetPath}": ${error.message}`);
+          throw new Error(mc.cannotAccess(targetPath, error.message));
         }
       }
 
@@ -47,31 +56,36 @@ program
       const initCommand = new InitCommand({
         tools: options?.tools,
         force: options?.force,
+        locale: cliLocale,
       });
       await initCommand.execute(targetPath);
     } catch (error) {
       console.log();
-      console.error(chalk.red(`错误: ${(error as Error).message}`));
+      console.error(chalk.red(mc.errorPrefix((error as Error).message)));
       process.exit(1);
     }
   });
 
 program
   .command('update [path]')
-  .description('更新 DeepLearn 技能文件到最新版本')
-  .option('--force', '强制更新即使已是最新版本')
-  .action(async (targetPath = '.', options?: { force?: boolean }) => {
+  .description(m.cli.updateCommandDescription)
+  .option('--force', m.cli.forceOption)
+  .option('--lang <locale>', m.cli.langOption)
+  .action(async (targetPath = '.', options?: { force?: boolean; lang?: string }) => {
+    const cliLocale = resolveLocale(options?.lang);
+    const mc = cliLocale !== earlyLocale ? getMessages(cliLocale).cli : m.cli;
     try {
       const { InitCommand } = await import('../core/init.js');
       const initCommand = new InitCommand({
         tools: 'all',
         force: options?.force ?? true,
+        locale: cliLocale,
       });
       await initCommand.execute(targetPath);
-      console.log(chalk.green('DeepLearn 技能文件已更新。'));
+      console.log(chalk.green(mc.updateComplete));
     } catch (error) {
       console.log();
-      console.error(chalk.red(`错误: ${(error as Error).message}`));
+      console.error(chalk.red(mc.errorPrefix((error as Error).message)));
       process.exit(1);
     }
   });

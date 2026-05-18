@@ -15,6 +15,8 @@ import {
   getCommandContents,
   generateSkillContent,
 } from './shared/index.js';
+import type { SupportedLocale } from '../i18n/types.js';
+import { getMessages } from '../i18n/index.js';
 
 const require = createRequire(import.meta.url);
 const { version: DEEPLEARN_VERSION } = require('../../package.json');
@@ -22,19 +24,23 @@ const { version: DEEPLEARN_VERSION } = require('../../package.json');
 type InitCommandOptions = {
   tools?: string;
   force?: boolean;
+  locale?: SupportedLocale;
 };
 
 export class InitCommand {
   private readonly toolsArg?: string;
   private readonly force: boolean;
+  private readonly locale: SupportedLocale;
 
   constructor(options: InitCommandOptions = {}) {
     this.toolsArg = options.tools;
     this.force = options.force ?? false;
+    this.locale = options.locale ?? 'en';
   }
 
   async execute(targetPath: string = '.'): Promise<void> {
     const resolvedPath = path.resolve(targetPath);
+    const m = getMessages(this.locale);
 
     // Ensure target directory exists
     await FileSystemUtils.ensureDir(resolvedPath);
@@ -43,7 +49,7 @@ export class InitCommand {
     const learnDir = path.join(os.homedir(), LEARN_GLOBAL_DIR);
     await FileSystemUtils.ensureDir(path.join(learnDir, 'topics'));
 
-    console.log(chalk.bold('\n🧠 DeepLearn — AI 驱动的递归学习系统\n'));
+    console.log(chalk.bold(m.init.header));
 
     // Detect available tools
     const availableTools = await this.detectTools(resolvedPath);
@@ -67,11 +73,11 @@ export class InitCommand {
     }
 
     if (selectedTools.length === 0) {
+      console.log(chalk.yellow(m.init.noToolsSelected));
       console.log(
-        chalk.yellow('未选择任何 AI 工具。使用 --tools 参数指定，或在交互模式中选择。')
-      );
-      console.log(
-        chalk.dim(`可用的工具：${availableTools.filter((t) => t.available).map((t) => t.value).join(', ')}`)
+        chalk.dim(m.init.availableTools(
+          availableTools.filter((t) => t.available).map((t) => t.value).join(', ')
+        ))
       );
       return;
     }
@@ -81,23 +87,36 @@ export class InitCommand {
       if (!tool.skillsDir) continue;
       await this.generateSkillsForTool(resolvedPath, tool);
       await this.generateCommandsForTool(resolvedPath, tool);
-      console.log(
-        chalk.green(`  ✓ ${tool.name}`) +
-          chalk.dim(` — 5 个技能文件已生成`)
-      );
+      console.log(chalk.green(m.init.skillGenerated(tool.name)));
     }
 
     console.log('');
-    console.log(chalk.bold('🎉 DeepLearn 初始化完成！\n'));
-    console.log(chalk.dim('  全局学习数据存储在 ') + chalk.cyan(`~/${LEARN_GLOBAL_DIR}/`));
-    console.log(chalk.dim('  运行 ') + chalk.cyan('/learn javascript') + chalk.dim(' 开始你的第一个学习主题\n'));
+    console.log(chalk.bold(m.init.initComplete));
+    console.log(chalk.dim(m.init.globalDataPath(LEARN_GLOBAL_DIR)));
+    console.log(chalk.dim(m.init.startLearning('/learn javascript')));
 
-    console.log(chalk.bold('可用的学习命令：'));
-    console.log(chalk.cyan('  /learn <主题名>') + chalk.dim('          — 初始化或加载学习主题'));
-    console.log(chalk.cyan('  /learn-explain <概念>') + chalk.dim('     — 递归式深度学习一个概念'));
-    console.log(chalk.cyan('  /learn-practice <概念>') + chalk.dim('    — TDD 练习巩固'));
-    console.log(chalk.cyan('  /learn-review') + chalk.dim('              — 回顾进度，获取推荐'));
-    console.log(chalk.cyan('  /learn-status') + chalk.dim('              — 可视化知识图谱热力图'));
+    console.log(chalk.bold(m.init.availableCommands));
+    const cmd = m.init.cmdLine;
+    console.log(cmd(
+      chalk.cyan('/learn <topic>'),
+      chalk.dim(`          — ${m.skills.topic.command.description}`)
+    ));
+    console.log(cmd(
+      chalk.cyan('/learn-explain <concept>'),
+      chalk.dim(`     — ${m.skills.explain.command.description}`)
+    ));
+    console.log(cmd(
+      chalk.cyan('/learn-practice <concept>'),
+      chalk.dim(`    — ${m.skills.practice.command.description}`)
+    ));
+    console.log(cmd(
+      chalk.cyan('/learn-review'),
+      chalk.dim(`              — ${m.skills.review.command.description}`)
+    ));
+    console.log(cmd(
+      chalk.cyan('/learn-status'),
+      chalk.dim(`              — ${m.skills.status.command.description}`)
+    ));
     console.log('');
   }
 
@@ -132,7 +151,7 @@ export class InitCommand {
     }));
 
     const selected = await checkbox({
-      message: '选择要生成技能的 AI 工具（空格选择，回车确认）：',
+      message: getMessages(this.locale).init.interactiveSelectPrompt,
       choices,
       pageSize: 15,
     });
@@ -144,7 +163,7 @@ export class InitCommand {
     resolvedPath: string,
     tool: AIToolOption
   ): Promise<void> {
-    const skillTemplates = getSkillTemplates();
+    const skillTemplates = getSkillTemplates(this.locale);
 
     for (const entry of skillTemplates) {
       const skillDir = path.join(
@@ -166,7 +185,7 @@ export class InitCommand {
     const adapter = CommandAdapterRegistry.get(tool.value);
     if (!adapter) return;
 
-    const commandContents = getCommandContents();
+    const commandContents = getCommandContents(this.locale);
     const generatedCommands = generateCommands(commandContents, adapter);
 
     for (const cmd of generatedCommands) {

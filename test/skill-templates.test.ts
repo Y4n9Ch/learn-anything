@@ -19,10 +19,13 @@ import {
 } from '../src/core/shared/skill-generation.js';
 import { CommandAdapterRegistry } from '../src/core/command-generation/registry.js';
 import { generateCommand, generateCommands } from '../src/core/command-generation/generator.js';
+import type { SupportedLocale } from '../src/i18n/types.js';
+
+const L: SupportedLocale = 'zh-CN';
 
 describe('Skill Templates', () => {
   it('should return 5 skill templates with required fields', () => {
-    const templates = getSkillTemplates();
+    const templates = getSkillTemplates(L);
     expect(templates).toHaveLength(5);
 
     for (const entry of templates) {
@@ -36,30 +39,46 @@ describe('Skill Templates', () => {
   });
 
   it('should have unique workflow IDs', () => {
-    const templates = getSkillTemplates();
+    const templates = getSkillTemplates(L);
     const ids = templates.map((t) => t.workflowId);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
   it('should generate valid SKILL.md content with YAML frontmatter', () => {
-    const template = getLearnExplainSkillTemplate();
+    const template = getLearnExplainSkillTemplate(L);
     const content = generateSkillContent(template, '0.1.0');
 
     expect(content).toContain('---');
     expect(content).toContain('name: deeplearn-explain');
     expect(content).toContain('generatedBy: "0.1.0"');
+    expect(content).toContain('DeepLearn');
+  });
+
+  it('should generate English SKILL.md content when en locale is passed', () => {
+    const template = getLearnExplainSkillTemplate('en');
+    const content = generateSkillContent(template, '0.1.0');
+
+    expect(content).toContain('---');
+    expect(content).toContain('name: deeplearn-explain');
+    expect(content).toContain('You are DeepLearn');
+  });
+
+  it('should generate Chinese SKILL.md content when zh-CN locale is passed', () => {
+    const template = getLearnExplainSkillTemplate('zh-CN');
+    const content = generateSkillContent(template, '0.1.0');
+
     expect(content).toContain('你是 DeepLearn 的讲解导师');
   });
 });
 
 describe('Command Templates', () => {
   it('should return 5 command templates', () => {
-    const templates = getCommandTemplates();
+    const templates = getCommandTemplates(L);
     expect(templates).toHaveLength(5);
   });
 
   it('should generate CommandContent array', () => {
-    const contents = getCommandContents();
+    const contents = getCommandContents(L);
     expect(contents).toHaveLength(5);
     for (const c of contents) {
       expect(c.id).toBeTruthy();
@@ -75,7 +94,7 @@ describe('Command Generation', () => {
     const adapter = CommandAdapterRegistry.get('claude');
     expect(adapter).toBeDefined();
 
-    const contents = getCommandContents();
+    const contents = getCommandContents(L);
     const cmds = generateCommands(contents, adapter!);
     expect(cmds).toHaveLength(5);
 
@@ -91,7 +110,7 @@ describe('Command Generation', () => {
     const adapter = CommandAdapterRegistry.get('cursor');
     expect(adapter).toBeDefined();
 
-    const topicContent = getCommandContents()[0];
+    const topicContent = getCommandContents(L)[0];
     const cmd = generateCommand(topicContent, adapter!);
     expect(cmd.path).toContain('.cursor/commands/deeplearn-topic.md');
     expect(cmd.fileContent).toContain('/deeplearn-topic');
@@ -101,7 +120,7 @@ describe('Command Generation', () => {
     const adapter = CommandAdapterRegistry.get('codex');
     expect(adapter).toBeDefined();
 
-    const topicContent = getCommandContents()[0];
+    const topicContent = getCommandContents(L)[0];
     const cmd = generateCommand(topicContent, adapter!);
     expect(cmd.path).toContain('.codex/prompts/deeplearn-topic.md');
   });
@@ -110,7 +129,7 @@ describe('Command Generation', () => {
     const adapter = CommandAdapterRegistry.get('gemini');
     expect(adapter).toBeDefined();
 
-    const topicContent = getCommandContents()[0];
+    const topicContent = getCommandContents(L)[0];
     const cmd = generateCommand(topicContent, adapter!);
     expect(cmd.path).toContain('.gemini/commands/learn/');
     expect(cmd.path).toMatch(/\.toml$/);
@@ -121,7 +140,7 @@ describe('Command Generation', () => {
 
 describe('Skill Template Content Quality', () => {
   it('explain template should include Socratic guidance', () => {
-    const t = getLearnExplainSkillTemplate();
+    const t = getLearnExplainSkillTemplate('zh-CN');
     expect(t.instructions).toContain('苏格拉底');
     expect(t.instructions).toContain('递归');
     expect(t.instructions).toContain('70%讲解');
@@ -129,7 +148,7 @@ describe('Skill Template Content Quality', () => {
   });
 
   it('practice template should include TDD guidance', () => {
-    const t = getLearnPracticeSkillTemplate();
+    const t = getLearnPracticeSkillTemplate('zh-CN');
     expect(t.instructions).toContain('TDD');
     expect(t.instructions).toContain('难度动态调整');
     expect(t.instructions).toContain('苏格拉底式反馈');
@@ -137,7 +156,7 @@ describe('Skill Template Content Quality', () => {
   });
 
   it('topic template should include knowledge map generation', () => {
-    const t = getLearnTopicSkillTemplate();
+    const t = getLearnTopicSkillTemplate('zh-CN');
     expect(t.instructions).toContain('知识图谱');
     expect(t.instructions).toContain('knowledge-map.md');
     expect(t.instructions).toContain('state.yaml');
@@ -145,13 +164,13 @@ describe('Skill Template Content Quality', () => {
   });
 
   it('review template should include spaced repetition', () => {
-    const t = getLearnReviewSkillTemplate();
+    const t = getLearnReviewSkillTemplate('zh-CN');
     expect(t.instructions).toContain('间隔重复');
     expect(t.instructions).toContain('priority = (1 - confidence)');
   });
 
   it('status template should include visualization', () => {
-    const t = getLearnStatusSkillTemplate();
+    const t = getLearnStatusSkillTemplate('zh-CN');
     expect(t.instructions).toContain('热力图');
     expect(t.instructions).toContain('✅');
     expect(t.instructions).toContain('汇总面板');

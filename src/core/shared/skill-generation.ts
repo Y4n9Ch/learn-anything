@@ -12,6 +12,7 @@ import {
   type SkillTemplate,
 } from '../templates/skill-templates.js';
 import type { CommandContent } from '../command-generation/index.js';
+import type { SupportedLocale } from '../../i18n/types.js';
 
 export interface SkillTemplateEntry {
   template: SkillTemplate;
@@ -24,28 +25,28 @@ export interface CommandTemplateEntry {
   id: string;
 }
 
-export function getSkillTemplates(): SkillTemplateEntry[] {
+export function getSkillTemplates(locale: SupportedLocale): SkillTemplateEntry[] {
   return [
-    { template: getLearnTopicSkillTemplate(), dirName: 'deeplearn-topic', workflowId: 'topic' },
-    { template: getLearnExplainSkillTemplate(), dirName: 'deeplearn-explain', workflowId: 'explain' },
-    { template: getLearnPracticeSkillTemplate(), dirName: 'deeplearn-practice', workflowId: 'practice' },
-    { template: getLearnReviewSkillTemplate(), dirName: 'deeplearn-review', workflowId: 'review' },
-    { template: getLearnStatusSkillTemplate(), dirName: 'deeplearn-status', workflowId: 'status' },
+    { template: getLearnTopicSkillTemplate(locale), dirName: 'deeplearn-topic', workflowId: 'topic' },
+    { template: getLearnExplainSkillTemplate(locale), dirName: 'deeplearn-explain', workflowId: 'explain' },
+    { template: getLearnPracticeSkillTemplate(locale), dirName: 'deeplearn-practice', workflowId: 'practice' },
+    { template: getLearnReviewSkillTemplate(locale), dirName: 'deeplearn-review', workflowId: 'review' },
+    { template: getLearnStatusSkillTemplate(locale), dirName: 'deeplearn-status', workflowId: 'status' },
   ];
 }
 
-export function getCommandTemplates(): CommandTemplateEntry[] {
+export function getCommandTemplates(locale: SupportedLocale): CommandTemplateEntry[] {
   return [
-    { template: getLearnTopicCommandTemplate(), id: 'topic' },
-    { template: getLearnExplainCommandTemplate(), id: 'explain' },
-    { template: getLearnPracticeCommandTemplate(), id: 'practice' },
-    { template: getLearnReviewCommandTemplate(), id: 'review' },
-    { template: getLearnStatusCommandTemplate(), id: 'status' },
+    { template: getLearnTopicCommandTemplate(locale), id: 'topic' },
+    { template: getLearnExplainCommandTemplate(locale), id: 'explain' },
+    { template: getLearnPracticeCommandTemplate(locale), id: 'practice' },
+    { template: getLearnReviewCommandTemplate(locale), id: 'review' },
+    { template: getLearnStatusCommandTemplate(locale), id: 'status' },
   ];
 }
 
-export function getCommandContents(): CommandContent[] {
-  const commandTemplates = getCommandTemplates();
+export function getCommandContents(locale: SupportedLocale): CommandContent[] {
+  const commandTemplates = getCommandTemplates(locale);
   return commandTemplates.map(({ template, id }) => ({
     id,
     name: template.name,
