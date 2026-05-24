@@ -100,24 +100,24 @@ export class InitCommand {
     console.log(chalk.bold(m.init.availableCommands));
     const cmd = m.init.cmdLine;
     console.log(cmd(
-      chalk.cyan('/learn <topic>'),
-      chalk.dim('          — Initialize or load a learning topic')
+      chalk.cyan('/learn:topic <topic-name>'),
+      chalk.dim('      — Initialize or load a learning topic')
     ));
     console.log(cmd(
-      chalk.cyan('/learn-explain <concept>'),
-      chalk.dim('     — Recursively deep-dive into a concept')
+      chalk.cyan('/learn:explain <concept-name>'),
+      chalk.dim('  — Recursively deep-dive into a concept')
     ));
     console.log(cmd(
-      chalk.cyan('/learn-practice <concept>'),
-      chalk.dim('    — TDD-style coding exercises')
+      chalk.cyan('/learn:practice <concept-name>'),
+      chalk.dim(' — TDD-style coding exercises')
     ));
     console.log(cmd(
-      chalk.cyan('/learn-review'),
-      chalk.dim('              — Review progress, get spaced repetition recommendations')
+      chalk.cyan('/learn:review [topic-name]'),
+      chalk.dim('    — Review progress, spaced repetition recommendations')
     ));
     console.log(cmd(
-      chalk.cyan('/learn-status'),
-      chalk.dim('              — Visualize learning state as knowledge map heatmap')
+      chalk.cyan('/learn:status [topic-name]'),
+      chalk.dim('    — Visualize learning state as knowledge map heatmap')
     ));
     console.log('');
   }

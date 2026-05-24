@@ -1,0 +1,92 @@
+# Learn Anything
+
+AI-powered recursive learning system — turns your AI coding assistant into an interactive tutor using the Socratic method and TDD-style exercises.
+
+Generate skill and command files for **30+ AI tools** (Claude Code, Cursor, Gemini CLI, Codex, Copilot, Windsurf, etc.), then use slash commands to systematically master any technical topic.
+
+## Quick Start
+
+```bash
+# Initialize in your project (interactive — select your AI tools)
+npx learn-anything init
+
+# Or specify tools directly
+npx learn-anything init --tools claude
+
+# Chinese terminal output
+npx learn-anything init --lang zh-CN
+```
+
+After init, your AI assistant gains five learning commands:
+
+| Command | What it does |
+|---------|-------------|
+| `/learn:topic <topic-name>` | Initialize a topic, generate a knowledge map, track progress |
+| `/learn:explain <concept-name>` | Recursive Socratic deep-dive into a concept |
+| `/learn:practice <concept-name>` | TDD-style coding exercises with Socratic feedback |
+| `/learn:review [topic-name]` | Review progress, spaced repetition recommendations |
+| `/learn:status [topic-name]` | Visualize learning state as a knowledge map heatmap |
+
+## Learning Workflows
+
+### `/learn:topic <topic-name>` — Initialize a Topic
+
+The AI generates a hierarchical knowledge map (`.learn/topics/<topic>/knowledge-map.md`), creates a learning state tracker (`state.yaml`), and presents the landscape for you to choose your own path.
+
+### `/learn:explain <concept-name>` — Recursive Deep Dive
+
+The AI assesses your level (beginner → advanced), explains the concept with analogies and code examples, identifies deeper sub-topics, and lets you choose how deep to go. Every session is recorded for spaced repetition.
+
+### `/learn:practice <concept-name>` — TDD-Style Exercises
+
+The AI generates a test-driven exercise at the right difficulty (beginner / intermediate / challenge), provides structured Socratic feedback, and updates your mastery status. Edge cases, security, and code quality are all covered.
+
+### `/learn:review [topic-name]` — Progress Review
+
+Analyzes your learning data: mastery heatmap, spaced repetition priority scoring, concept relationship analysis (blocking / orphan concepts). Generates a personalized next-step plan.
+
+### `/learn:status [topic-name]` — Visualize State
+
+Renders a knowledge map heatmap with status icons, practice counts, and confidence scores for every concept.
+
+## Supported AI Tools
+
+Manage, Amazon Q Developer, Antigravity, Auggie, Bob Shell, Claude Code, Cline, Codex, ForgeCode, CodeBuddy Code, Continue, CoStrict, Crush, Cursor, Factory Droid, Gemini CLI, GitHub Copilot, iFlow, Junie, Kilo Code, Kiro, OpenCode, Pi, Qoder, Lingma, Qwen Code, RooCode, Trae, Windsurf, and AGENTS.md-compatible assistants.
+
+```bash
+# Update skill files to latest version (detects existing tools automatically)
+npx learn-anything update
+```
+
+## How It Works
+
+```
+Your Project/
+├── .claude/commands/learn/    # Slash commands (learn:topic, learn:explain, ...)
+├── .claude/skills/            # Skill files with full workflow instructions
+├── .cursor/commands/          # Cursor-specific command format
+├── .gemini/commands/learn/    # Gemini TOML-format commands
+├── .learn/                    # Your learning data (knowledge maps, progress)
+│   └── topics/
+│       └── javascript/
+│           ├── knowledge-map.md
+│           ├── state.yaml
+│           └── sessions/
+└── ...
+```
+
+Each AI tool gets tool-appropriate file formats (YAML frontmatter for Claude, TOML for Gemini, etc.) via an adapter pattern.
+
+## Development
+
+```bash
+pnpm install
+pnpm build        # Compile TypeScript
+pnpm test         # Run tests
+pnpm dev          # Watch mode
+pnpm dev:cli      # Build and run CLI locally
+```
+
+## License
+
+MIT
