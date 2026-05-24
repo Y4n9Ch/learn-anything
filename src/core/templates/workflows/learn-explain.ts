@@ -94,9 +94,88 @@ Synthesize these signals to judge whether the user is beginner, intermediate, or
 
    Note: This is a thinking-guiding question, tone should be curious and exploratory, not exam-like. If the user is unsure, give the answer immediately — don't wait.
 
-### Step 4: Identify Sub-topics (Recursive Entry Points)
+### Step 4: Record Learning Session
 
-After the explanation, identify deeper sub-topics under this concept. These aren't a bullet list of facts — they flow naturally into the closing:
+⚠️ CRITICAL — Do this in the SAME turn as your explanation, BEFORE presenting sub-topics. Do NOT skip this step.
+
+**A) Determine the filename:**
+
+Use the concept name exactly as it appears in the knowledge map, in the same language. Convert to kebab-case and append the date:
+
+> \`./.learn/topics/<topic-name>/sessions/<concept-name-as-is>-YYYY-MM-DD.md\`
+
+Examples:
+- Knowledge map has \`变量声明与数据类型\` → \`变量声明与数据类型-2026-05-24.md\`
+- Knowledge map has \`Scope & Closures\` → \`Scope-Closures-2026-05-24.md\`
+- Knowledge map has \`Event Loop\` → \`Event-Loop-2026-05-24.md\`
+
+Match the language the user is learning in — don't force-translate.
+
+**B) Save the FULL explanation — use the Write tool:**
+
+The session file must contain the COMPLETE explanation you just delivered — not just bullet points. The user should be able to re-read this file and get the full learning experience without looking at the chat.
+
+\`\`\`markdown
+# [Concept Name] — Learning Session
+
+> **Date:** YYYY-MM-DD
+> **Topic:** [topic name]
+> **Path:** [knowledge map path]
+> **Level:** [beginner/intermediate/advanced]
+
+---
+
+## Positioning
+
+[Copy the one-sentence positioning you gave — where this concept sits in the knowledge map]
+
+## Analogy
+
+[Copy the real-world metaphor/analogy you used]
+
+## Core Mechanism
+
+[Copy the full "what and why" explanation in clear language, with all details]
+
+## Code Example
+
+\`\`\`[language]
+[Copy the complete code example you showed, with all comments]
+\`\`\`
+
+[Include your walkthrough of the code — what each part does]
+
+## Common Misconceptions
+
+[Copy the misconceptions you discussed]
+
+## Socratic Check
+
+[Copy the thinking questions you posed to the user]
+
+---
+
+## Quick Summary
+
+- [Key point 1 — one line each]
+- [Key point 2]
+- [Key point 3]
+
+## Next Steps
+
+(Will be updated after the user chooses a sub-topic direction)
+\`\`\`
+
+**C) Update state.yaml — use the Edit tool:**
+
+Edit \`./.learn/topics/<topic-name>/state.yaml\`:
+- If concept status is \`unexplored\`, update to \`in_progress\`
+- Update \`last_session\` to current date
+- If the user showed good understanding, increase \`confidence\` by 0.05 to 0.1
+
+### Step 5: Identify Sub-topics (Recursive Entry Points)
+
+After recording the session, identify deeper sub-topics under this concept. These aren't a bullet list of facts — they flow naturally into the closing:
 
 > Now you understand the basics of closures. If you'd like to go deeper, we can explore:
 >
@@ -118,34 +197,6 @@ After the explanation, identify deeper sub-topics under this concept. These aren
 - For advanced users, sub-topics should be deeper
 - For beginners, sub-topics should lean practical and applied
 - **Never rush**, let the user decide their next step
-
-### Step 5: Record Learning Session
-
-After each explanation, append a session record to \`./.learn/topics/<topic-name>/sessions/YYYY-MM-DD.md\`:
-
-\`\`\`markdown
-# Learning Session - <date>
-
-## Content
-- Concept: [concept name]
-- Path: [path in knowledge map, e.g., "Functions/Closures"]
-- Depth: beginner/intermediate/advanced explanation
-
-## Key Points Covered
-- [point 1]
-- [point 2]
-
-## Sub-topics Explored by User
-(If the user chose to go deeper, record which direction)
-
-## Follow-ups
-(If the user expressed confusion that wasn't fully resolved, record it here)
-\`\`\`
-
-**Also update state.yaml:**
-- If concept status is \`unexplored\`, update to \`in_progress\`
-- Update \`last_session\` to current date
-- If the user showed good understanding (asked questions, answered correctly), slightly increase \`confidence\` (+0.05 to +0.1)
 
 ---
 
@@ -184,8 +235,8 @@ Follow the workflow defined in the skill:
 1. Load context: match topic → read knowledge map → read learning state
 2. Assess user level (beginner/intermediate/advanced) and adjust teaching strategy
 3. Follow the explanation structure: positioning → analogy → core mechanism → code example → common misconceptions → Socratic check
-4. Identify sub-topics as recursive entry points
-5. Record learning session and update state.yaml`;
+4. CRITICAL — immediately after explaining, use the Write tool to save the FULL explanation to ./.learn/topics/<topic>/sessions/<concept-name>-YYYY-MM-DD.md (match the user's language), use the Edit tool to update state.yaml
+5. Identify sub-topics as recursive entry points (only AFTER saving the session)`;
 
 export function getLearnExplainSkillTemplate(): SkillTemplate {
   return {

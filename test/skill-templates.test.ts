@@ -145,9 +145,10 @@ describe('Skill Template Content Quality', () => {
     expect(t.instructions).toContain('./.learn/topics/');
   });
 
-  it('practice template should include TDD guidance', () => {
+  it('practice template should include dual-mode guidance', () => {
     const t = getLearnPracticeSkillTemplate();
-    expect(t.instructions).toContain('TDD');
+    expect(t.instructions).toContain('Project Mode');
+    expect(t.instructions).toContain('Chat Mode');
     expect(t.instructions).toContain('Dynamic Difficulty');
     expect(t.instructions).toContain('Socratic Feedback');
     expect(t.instructions).toContain('Code Template');
