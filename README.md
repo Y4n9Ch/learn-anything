@@ -7,17 +7,18 @@ Generate skill and command files for **30+ AI tools** (Claude Code, Cursor, Gemi
 ## Quick Start
 
 ```bash
-# Install globally
-npm install -g github:ChenChenyaqi/learn-anything
-
 # Initialize in your project (interactive — select your AI tools)
-npx learn-anything init
+npx learn-anything-cli init
 
 # Or specify tools directly
-npx learn-anything init --tools claude
+npx learn-anything-cli init --tools claude
 
 # Chinese terminal output
-npx learn-anything init --lang zh-CN
+npx learn-anything-cli init --lang zh-CN
+
+# Or install globally
+npm install -g learn-anything-cli
+learn-anything init
 ```
 
 After init, your AI assistant gains five learning commands:
@@ -58,7 +59,7 @@ Manage, Amazon Q Developer, Antigravity, Auggie, Bob Shell, Claude Code, Cline, 
 
 ```bash
 # Update skill files to latest version (detects existing tools automatically)
-learn-anything update
+npx learn-anything-cli update
 ```
 
 ## How It Works
