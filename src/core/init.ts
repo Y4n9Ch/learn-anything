@@ -24,17 +24,20 @@ type InitCommandOptions = {
   tools?: string;
   force?: boolean;
   locale?: SupportedLocale;
+  update?: boolean;
 };
 
 export class InitCommand {
   private readonly toolsArg?: string;
   private readonly force: boolean;
   private readonly locale: SupportedLocale;
+  private readonly isUpdate: boolean;
 
   constructor(options: InitCommandOptions = {}) {
     this.toolsArg = options.tools;
     this.force = options.force ?? false;
     this.locale = options.locale ?? 'en';
+    this.isUpdate = options.update ?? false;
   }
 
   async execute(targetPath: string = '.'): Promise<void> {
@@ -62,13 +65,13 @@ export class InitCommand {
     } else if (this.toolsArg) {
       const toolIds = this.toolsArg.split(',').map((t) => t.trim());
       selectedTools = availableTools.filter((t) => toolIds.includes(t.value));
-    } else if (isInteractive()) {
-      selectedTools = await this.interactiveSelect(availableTools);
-    } else {
-      // Non-interactive, auto-detect
+    } else if (this.isUpdate || !isInteractive()) {
+      // Update mode or non-interactive: auto-detect existing tool dirs
       selectedTools = availableTools.filter(
         (t) => t.available && this.hasToolDir(resolvedPath, t)
       );
+    } else {
+      selectedTools = await this.interactiveSelect(availableTools);
     }
 
     if (selectedTools.length === 0) {
@@ -98,23 +101,23 @@ export class InitCommand {
     const cmd = m.init.cmdLine;
     console.log(cmd(
       chalk.cyan('/learn <topic>'),
-      chalk.dim(`          — ${m.skills.topic.command.description}`)
+      chalk.dim('          — Initialize or load a learning topic')
     ));
     console.log(cmd(
       chalk.cyan('/learn-explain <concept>'),
-      chalk.dim(`     — ${m.skills.explain.command.description}`)
+      chalk.dim('     — Recursively deep-dive into a concept')
     ));
     console.log(cmd(
       chalk.cyan('/learn-practice <concept>'),
-      chalk.dim(`    — ${m.skills.practice.command.description}`)
+      chalk.dim('    — TDD-style coding exercises')
     ));
     console.log(cmd(
       chalk.cyan('/learn-review'),
-      chalk.dim(`              — ${m.skills.review.command.description}`)
+      chalk.dim('              — Review progress, get spaced repetition recommendations')
     ));
     console.log(cmd(
       chalk.cyan('/learn-status'),
-      chalk.dim(`              — ${m.skills.status.command.description}`)
+      chalk.dim('              — Visualize learning state as knowledge map heatmap')
     ));
     console.log('');
   }
@@ -162,7 +165,7 @@ export class InitCommand {
     resolvedPath: string,
     tool: AIToolOption
   ): Promise<void> {
-    const skillTemplates = getSkillTemplates(this.locale);
+    const skillTemplates = getSkillTemplates();
 
     for (const entry of skillTemplates) {
       const skillDir = path.join(
@@ -184,7 +187,7 @@ export class InitCommand {
     const adapter = CommandAdapterRegistry.get(tool.value);
     if (!adapter) return;
 
-    const commandContents = getCommandContents(this.locale);
+    const commandContents = getCommandContents();
     const generatedCommands = generateCommands(commandContents, adapter);
 
     for (const cmd of generatedCommands) {

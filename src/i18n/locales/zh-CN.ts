@@ -1,9 +1,4 @@
 import type { LocaleMessages } from '../types.js';
-import { topic } from './skills/zh-CN/topic.js';
-import { explain } from './skills/zh-CN/explain.js';
-import { practice } from './skills/zh-CN/practice.js';
-import { review } from './skills/zh-CN/review.js';
-import { status } from './skills/zh-CN/status.js';
 
 export const zhCN: LocaleMessages = {
   cli: {
@@ -33,6 +28,4 @@ export const zhCN: LocaleMessages = {
     cmdLine: (cmd: string, desc: string) => `  ${cmd}${desc}`,
     interactiveSelectPrompt: '选择要生成技能的 AI 工具（空格选择，回车确认）：',
   },
-
-  skills: { topic, explain, practice, review, status },
 };

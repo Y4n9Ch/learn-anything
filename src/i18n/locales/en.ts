@@ -1,9 +1,4 @@
 import type { LocaleMessages } from '../types.js';
-import { topic } from './skills/en/topic.js';
-import { explain } from './skills/en/explain.js';
-import { practice } from './skills/en/practice.js';
-import { review } from './skills/en/review.js';
-import { status } from './skills/en/status.js';
 
 export const en: LocaleMessages = {
   cli: {
@@ -33,6 +28,4 @@ export const en: LocaleMessages = {
     cmdLine: (cmd: string, desc: string) => `  ${cmd}${desc}`,
     interactiveSelectPrompt: 'Select AI tools to generate skills for (space to select, enter to confirm):',
   },
-
-  skills: { topic, explain, practice, review, status },
 };
