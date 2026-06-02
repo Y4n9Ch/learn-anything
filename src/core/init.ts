@@ -5,15 +5,8 @@ import { createRequire } from 'module';
 import { FileSystemUtils } from '../utils/file-system.js';
 import { AI_TOOLS, AIToolOption, LEARN_DIR } from './config.js';
 import { isInteractive } from '../utils/interactive.js';
-import {
-  generateCommands,
-  CommandAdapterRegistry,
-} from './command-generation/index.js';
-import {
-  getSkillTemplates,
-  getCommandContents,
-  generateSkillContent,
-} from './shared/index.js';
+import { generateCommands, CommandAdapterRegistry } from './command-generation/index.js';
+import { getSkillTemplates, getCommandContents, generateSkillContent } from './shared/index.js';
 import type { SupportedLocale } from '../i18n/types.js';
 import { getMessages } from '../i18n/index.js';
 
@@ -67,9 +60,7 @@ export class InitCommand {
       selectedTools = availableTools.filter((t) => toolIds.includes(t.value));
     } else if (this.isUpdate || !isInteractive()) {
       // Update mode or non-interactive: auto-detect existing tool dirs
-      selectedTools = availableTools.filter(
-        (t) => t.available && this.hasToolDir(resolvedPath, t)
-      );
+      selectedTools = availableTools.filter((t) => t.available && this.hasToolDir(resolvedPath, t));
     } else {
       selectedTools = await this.interactiveSelect(availableTools);
     }
@@ -77,9 +68,14 @@ export class InitCommand {
     if (selectedTools.length === 0) {
       console.log(chalk.yellow(m.init.noToolsSelected));
       console.log(
-        chalk.dim(m.init.availableTools(
-          availableTools.filter((t) => t.available).map((t) => t.value).join(', ')
-        ))
+        chalk.dim(
+          m.init.availableTools(
+            availableTools
+              .filter((t) => t.available)
+              .map((t) => t.value)
+              .join(', '),
+          ),
+        ),
       );
       return;
     }
@@ -99,30 +95,37 @@ export class InitCommand {
 
     console.log(chalk.bold(m.init.availableCommands));
     const cmd = m.init.cmdLine;
-    console.log(cmd(
-      chalk.cyan('/learn:topic <topic-name>'),
-      chalk.dim('      — Initialize or load a learning topic')
-    ));
-    console.log(cmd(
-      chalk.cyan('/learn:explain <concept-name>'),
-      chalk.dim('  — Recursively deep-dive into a concept')
-    ));
-    console.log(cmd(
-      chalk.cyan('/learn:practice <concept-name>'),
-      chalk.dim(' — TDD-style coding exercises')
-    ));
-    console.log(cmd(
-      chalk.cyan('/learn:review [topic-name]'),
-      chalk.dim('    — Review progress, spaced repetition recommendations')
-    ));
-    console.log(cmd(
-      chalk.cyan('/learn:status [topic-name]'),
-      chalk.dim('    — Visualize learning state as knowledge map heatmap')
-    ));
+    console.log(
+      cmd(
+        chalk.cyan('/learn:topic <topic-name>'),
+        chalk.dim('      — Initialize or load a learning topic'),
+      ),
+    );
+    console.log(
+      cmd(
+        chalk.cyan('/learn:explain <concept-name>'),
+        chalk.dim('  — Recursively deep-dive into a concept'),
+      ),
+    );
+    console.log(
+      cmd(chalk.cyan('/learn:practice <concept-name>'), chalk.dim(' — TDD-style coding exercises')),
+    );
+    console.log(
+      cmd(
+        chalk.cyan('/learn:review [topic-name]'),
+        chalk.dim('    — Review progress, spaced repetition recommendations'),
+      ),
+    );
+    console.log(
+      cmd(
+        chalk.cyan('/learn:status [topic-name]'),
+        chalk.dim('    — Visualize learning state as knowledge map heatmap'),
+      ),
+    );
     console.log('');
   }
 
-  private async detectTools(resolvedPath: string): Promise<AIToolOption[]> {
+  private async detectTools(_resolvedPath: string): Promise<AIToolOption[]> {
     return AI_TOOLS;
   }
 
@@ -138,12 +141,10 @@ export class InitCommand {
 
   private async interactiveSelect(tools: AIToolOption[]): Promise<AIToolOption[]> {
     const availableTools = tools.filter((t) => t.available && t.skillsDir);
-    const { search, checkbox } = await import('@inquirer/prompts');
+    const { checkbox } = await import('@inquirer/prompts');
 
     // Auto-detect existing tool dirs and pre-select them
-    const detected = availableTools.filter((t) =>
-      this.hasToolDir(process.cwd(), t)
-    );
+    const detected = availableTools.filter((t) => this.hasToolDir(process.cwd(), t));
     const detectedValues = new Set(detected.map((t) => t.value));
 
     const choices = availableTools.map((t) => ({
@@ -161,29 +162,18 @@ export class InitCommand {
     return availableTools.filter((t) => selected.includes(t.value));
   }
 
-  private async generateSkillsForTool(
-    resolvedPath: string,
-    tool: AIToolOption
-  ): Promise<void> {
+  private async generateSkillsForTool(resolvedPath: string, tool: AIToolOption): Promise<void> {
     const skillTemplates = getSkillTemplates();
 
     for (const entry of skillTemplates) {
-      const skillDir = path.join(
-        resolvedPath,
-        tool.skillsDir!,
-        'skills',
-        entry.dirName
-      );
+      const skillDir = path.join(resolvedPath, tool.skillsDir!, 'skills', entry.dirName);
       const skillFile = path.join(skillDir, 'SKILL.md');
       const content = generateSkillContent(entry.template, VERSION);
       await FileSystemUtils.writeFile(skillFile, content);
     }
   }
 
-  private async generateCommandsForTool(
-    resolvedPath: string,
-    tool: AIToolOption
-  ): Promise<void> {
+  private async generateCommandsForTool(resolvedPath: string, tool: AIToolOption): Promise<void> {
     const adapter = CommandAdapterRegistry.get(tool.value);
     if (!adapter) return;
 

@@ -1,7 +1,8 @@
 import type { SkillTemplate, CommandTemplate } from '../types.js';
 
 const SKILL_NAME = 'learn-anything-topic';
-const SKILL_DESCRIPTION = 'Initialize or load a learning topic. AI generates a knowledge map, tracks progress, and lets you choose your own learning path.';
+const SKILL_DESCRIPTION =
+  'Initialize or load a learning topic. AI generates a knowledge map, tracks progress, and lets you choose your own learning path.';
 
 const INSTRUCTIONS = `Always respond in the same language the user uses.
 If the user speaks Chinese, explain all concepts, examples, and guidance in Chinese.
@@ -167,7 +168,8 @@ Example:
 - **Knowledge map too large**: If the topic requires more than 30 concepts, prompt the user "This is a very broad topic. I'd suggest breaking it into smaller sub-topics. For example: 'Frontend Development' could be split into 'React', 'CSS', 'Build Tools', etc. Would you like to split it, or continue anyway?"`;
 
 const COMMAND_NAME = 'Learn: Topic';
-const COMMAND_DESCRIPTION = 'Initialize or load a learning topic — view knowledge map, track progress, choose your path';
+const COMMAND_DESCRIPTION =
+  'Initialize or load a learning topic — view knowledge map, track progress, choose your path';
 
 const COMMAND_CONTENT = `Use the learn-anything-topic skill to handle the user's /learn <topic-name> request.
 Follow the workflow defined in the skill:
