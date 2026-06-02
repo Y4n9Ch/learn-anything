@@ -1,7 +1,8 @@
 import type { SkillTemplate, CommandTemplate } from '../types.js';
 
 const SKILL_NAME = 'learn-anything-explain';
-const SKILL_DESCRIPTION = 'Recursively deep-dive into a concept. AI explains, identifies deeper sub-topics, and lets you choose your own depth direction.';
+const SKILL_DESCRIPTION =
+  'Recursively deep-dive into a concept. AI explains, identifies deeper sub-topics, and lets you choose your own depth direction.';
 
 const INSTRUCTIONS = `Always respond in the same language the user uses.
 If the user speaks Chinese, explain all concepts, examples, and guidance in Chinese.
@@ -228,7 +229,8 @@ After recording the session, identify deeper sub-topics under this concept. Thes
   - Provide simpler code examples`;
 
 const COMMAND_NAME = 'Learn: Explain';
-const COMMAND_DESCRIPTION = 'Recursively deep-dive into a concept — AI explains, guides thinking, you choose the depth';
+const COMMAND_DESCRIPTION =
+  'Recursively deep-dive into a concept — AI explains, guides thinking, you choose the depth';
 
 const COMMAND_CONTENT = `Use the learn-anything-explain skill to handle the user's /learn-explain <concept-name> request.
 Follow the workflow defined in the skill:

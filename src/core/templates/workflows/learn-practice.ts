@@ -1,7 +1,8 @@
 import type { SkillTemplate, CommandTemplate } from '../types.js';
 
 const SKILL_NAME = 'learn-anything-practice';
-const SKILL_DESCRIPTION = 'Master concepts through hands-on practice. Coding topics get real project files to edit in your IDE; conceptual topics get chat-based discussion. Dual-mode: Project Mode + Chat Mode.';
+const SKILL_DESCRIPTION =
+  'Master concepts through hands-on practice. Coding topics get real project files to edit in your IDE; conceptual topics get chat-based discussion. Dual-mode: Project Mode + Chat Mode.';
 
 const INSTRUCTIONS = `Always respond in the same language the user uses.
 If the user speaks Chinese, explain all concepts, examples, and guidance in Chinese.
@@ -371,7 +372,8 @@ Note: State.yaml updates are handled in Step 4's assessment (use the Edit tool t
 - **User explicitly requests a specific mode**: Respect the user's choice, even if it contradicts the auto-detection. "Sure! Let's do this as a coding exercise / chat discussion."`;
 
 const COMMAND_NAME = 'Learn: Practice';
-const COMMAND_DESCRIPTION = 'Hands-on practice — Project Mode creates real code files for your IDE, Chat Mode for conceptual discussion';
+const COMMAND_DESCRIPTION =
+  'Hands-on practice — Project Mode creates real code files for your IDE, Chat Mode for conceptual discussion';
 
 const COMMAND_CONTENT = `Use the learn-anything-practice skill to handle the user's /learn-practice <concept-name> request.
 Follow the workflow defined in the skill:
