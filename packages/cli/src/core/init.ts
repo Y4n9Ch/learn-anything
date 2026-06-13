@@ -143,6 +143,12 @@ export class InitCommand {
         chalk.dim('    — Visualize learning state as knowledge map heatmap'),
       ),
     );
+    console.log(
+      cmd(
+        chalk.cyan('/learn:quiz <generate|grade> ...'),
+        chalk.dim(' — Generate adaptive quizzes or grade submitted answers'),
+      ),
+    );
     console.log('');
 
     if (this.context7Enabled) {
@@ -282,7 +288,7 @@ export class InitCommand {
   }
 }
 
-const DOC_VERIFICATION_WORKFLOWS = new Set(['topic', 'explain', 'practice']);
+const DOC_VERIFICATION_WORKFLOWS = new Set(['topic', 'explain', 'practice', 'quiz']);
 
 function isDocVerificationTemplate(workflowId: string): boolean {
   return DOC_VERIFICATION_WORKFLOWS.has(workflowId);

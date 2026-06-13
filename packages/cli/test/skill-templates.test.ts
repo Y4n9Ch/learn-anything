@@ -207,12 +207,29 @@ describe('Skill Template Content Quality', () => {
     expect(t.instructions).toContain('heatmap');
   });
 
-  it('quiz template should generate formal quiz documents', () => {
+  it('quiz template should define a portable two-stage assessment workflow', () => {
     const t = getLearnQuizSkillTemplate();
-    expect(t.instructions).toContain('exercises.json');
-    expect(t.instructions).toContain('generate_html.py');
-    expect(t.instructions).toContain('generate_pdf.py');
-    expect(t.instructions).toContain('generate_docx.py');
+    expect(t.instructions).toContain('/learn:quiz generate <concept-or-domain>');
+    expect(t.instructions).toContain('/learn:quiz grade <quiz-id>');
+    expect(t.instructions).toContain('quiz.md');
+    expect(t.instructions).toContain('quiz.json');
+    expect(t.instructions).toContain('answer-key.json');
+    expect(t.instructions).toContain('submission.json');
+    expect(t.instructions).toContain('assessment.md');
+    expect(t.instructions).toContain('<domain-slug>-quiz-YYYYMMDD-HHmmss');
+    expect(t.instructions).toContain('Concept score');
+  });
+
+  it('quiz template should keep generation independent from grading and external renderers', () => {
+    const t = getLearnQuizSkillTemplate();
+    expect(t.instructions).toContain('generation ends here');
+    expect(t.instructions).toContain('Do not modify state.json');
+    expect(t.instructions).toContain('Do not run render.mjs');
+    expect(t.instructions).not.toContain('generate_html.py');
+    expect(t.instructions).not.toContain('generate_pdf.py');
+    expect(t.instructions).not.toContain('generate_docx.py');
+    expect(t.instructions).not.toContain('C:/Users/');
+    expect(t.instructions).not.toContain('launch parallel agents');
   });
 });
 
