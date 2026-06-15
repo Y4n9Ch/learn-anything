@@ -7,7 +7,7 @@ defineProps<{
 
 <template>
   <div
-    class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"
+    class="w-full h-1.5 bg-surface-2 rounded-full overflow-hidden"
     role="progressbar"
     :aria-valuenow="value"
     aria-valuemin="0"
@@ -15,10 +15,7 @@ defineProps<{
     :aria-label="label || `${value}%`"
   >
     <div
-      class="h-full rounded-full transition-all duration-500 ease-out"
-      :class="value === 100
-        ? 'bg-gradient-to-r from-emerald-400 to-emerald-300'
-        : 'bg-gradient-to-r from-indigo-400 to-indigo-300'"
+      class="h-full rounded-full transition-all duration-500 ease-out bg-accent"
       :style="{ width: `${value}%` }"
     />
   </div>

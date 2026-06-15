@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, shallowRef } from 'vue';
 import { useI18n } from '../composables/useI18n';
-import { scanSessions, loadMarkdown } from '../composables/useTopicData';
+import { scanSessions, loadSessionComponent } from '../composables/useTopicData';
 import type { SessionFile } from '../composables/useTopicData';
 
 const props = defineProps<{ slug: string; domain: string }>();
@@ -10,6 +10,9 @@ const { t } = useI18n();
 
 const files = computed<SessionFile[]>(() => scanSessions(props.slug, props.domain));
 const activePath = ref<string | null>(null);
+
+// Dynamically loaded Vue component from VitePress markdown processing
+const renderedComponent = shallowRef<unknown>(null);
 
 // Auto-select first file when files change
 watch(
@@ -22,34 +25,53 @@ watch(
   { immediate: true },
 );
 
-const selectedContent = computed(() => {
-  if (!activePath.value) return '';
-  return loadMarkdown(activePath.value) || '';
-});
+// Load and render the markdown component when activePath changes
+watch(
+  activePath,
+  async (path) => {
+    if (!path) {
+      renderedComponent.value = null;
+      return;
+    }
+    const loader = loadSessionComponent(path);
+    if (loader) {
+      const mod = await loader();
+      renderedComponent.value = (mod as { default: unknown }).default;
+    } else {
+      renderedComponent.value = null;
+    }
+  },
+  {
+    immediate: true,
+  },
+);
 </script>
 
 <template>
   <!-- Empty -->
-  <div v-if="files.length === 0" class="flex flex-col items-center justify-center py-16 text-center">
-    <div class="text-4xl mb-4 opacity-70">📝</div>
-    <p class="text-slate-500 dark:text-slate-400">{{ t('domain.noNotes') }}</p>
+  <div
+    v-if="files.length === 0"
+    class="flex flex-col items-center justify-center py-16 text-center"
+  >
+    <div class="text-4xl mb-4 opacity-60">📝</div>
+    <p class="text-content-3">{{ t('domain.noNotes') }}</p>
   </div>
 
   <!-- Two-column layout -->
   <div v-else class="flex gap-6 min-h-[420px]">
     <!-- File list sidebar -->
-    <div class="w-56 shrink-0 border-r border-slate-200 dark:border-slate-800 pr-4 overflow-y-auto max-h-[60vh]">
-      <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3 pl-2">
-        Sessions
-      </div>
+    <div class="w-44 shrink-0 border-r border-border-2 pr-3 overflow-y-auto max-h-[60vh]">
+      <div class="text-xs font-medium text-content-3 mb-3">Sessions</div>
       <nav class="space-y-0.5">
         <button
           v-for="file in files"
           :key="file.path"
-          class="block w-full text-left px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer"
-          :class="file.path === activePath
-            ? 'bg-indigo-50 dark:bg-indigo-400/10 text-indigo-600 dark:text-indigo-400 font-medium'
-            : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200'"
+          class="block w-full text-left px-2 py-1.5 rounded text-xs transition-colors cursor-pointer"
+          :class="
+            file.path === activePath
+              ? 'bg-accent/5 text-accent font-medium'
+              : 'text-content-2 hover:bg-surface-2 hover:text-content-1'
+          "
           @click="activePath = file.path"
         >
           {{ file.filename }}
@@ -57,10 +79,13 @@ const selectedContent = computed(() => {
       </nav>
     </div>
 
-    <!-- Content -->
+    <!-- Content — VitePress markdown component -->
     <div class="flex-1 min-w-0">
-      <div class="p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
-        <pre class="whitespace-pre-wrap break-words font-sans text-sm leading-relaxed text-slate-700 dark:text-slate-300 p-0 m-0 bg-transparent">{{ selectedContent }}</pre>
+      <div class="p-8 bg-surface-0 rounded-lg border border-border-1">
+        <div v-if="renderedComponent" class="prose max-w-none">
+          <component :is="renderedComponent" />
+        </div>
+        <div v-else class="text-content-3 text-sm">Loading...</div>
       </div>
     </div>
   </div>

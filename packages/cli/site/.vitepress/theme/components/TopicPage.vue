@@ -33,13 +33,6 @@ const pct = computed(() =>
     : 0,
 );
 
-const progressColor = computed(() => {
-  if (pct.value === 100) return 'text-emerald-600 dark:text-emerald-400';
-  if (pct.value >= 50) return 'text-indigo-600 dark:text-indigo-400';
-  if (pct.value > 0) return 'text-amber-600 dark:text-amber-400';
-  return 'text-slate-400 dark:text-slate-500';
-});
-
 function isDomainActive(domainSlug: string): boolean {
   if (typeof window !== 'undefined') {
     return window.location.pathname.includes(`/${props.slug}/${domainSlug}`);
@@ -55,28 +48,15 @@ function statusLabel(status: ConceptStatus): string {
   const key = status === 'in_progress' ? 'status.inProgress' : `status.${status}` as any;
   return t(key);
 }
-
-function statusBadgeClass(status: ConceptStatus): string {
-  switch (status) {
-    case 'mastered':
-      return 'text-emerald-700 dark:text-emerald-400';
-    case 'in_progress':
-      return 'text-amber-700 dark:text-amber-400';
-    case 'needs_practice':
-      return 'text-orange-700 dark:text-orange-400';
-    default:
-      return 'text-slate-400 dark:text-slate-500';
-  }
-}
 </script>
 
 <template>
   <!-- Topic found -->
-  <div v-if="state" class="flex gap-8 max-w-6xl mx-auto px-4 py-8">
+  <div v-if="state" class="flex gap-8 max-w-6xl mx-auto px-4 py-10">
     <!-- Left Sidebar -->
-    <aside class="w-60 shrink-0 border-r border-slate-200 dark:border-slate-800 pr-5">
+    <aside class="w-60 shrink-0 border-r border-border-2 pr-5">
       <div class="sticky top-20">
-        <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3 pl-3">
+        <div class="text-xs font-medium text-content-3 mb-3 pl-3">
           {{ t('topic.domains') }}
         </div>
 
@@ -84,10 +64,10 @@ function statusBadgeClass(status: ConceptStatus): string {
           <a
             v-for="domain in domainList"
             :key="domain.slug"
-            class="block px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer"
+            class="block px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer border-l-2"
             :class="isDomainActive(domain.slug)
-              ? 'bg-indigo-50 dark:bg-indigo-400/10 text-indigo-600 dark:text-indigo-400 font-medium'
-              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200'"
+              ? 'bg-accent/5 border-accent text-accent font-medium'
+              : 'border-transparent text-content-2 hover:bg-surface-2 hover:text-content-1'"
             :href="`/topics/${slug}/${domain.slug}`"
             @click.prevent="navigateToDomain(domain.slug)"
           >
@@ -100,27 +80,27 @@ function statusBadgeClass(status: ConceptStatus): string {
     <!-- Right Content -->
     <div class="flex-1 min-w-0">
       <!-- Title -->
-      <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+      <h1 class="text-2xl font-semibold text-content-1 tracking-tight">
         {{ state.topic }}
       </h1>
 
       <!-- Progress Summary -->
-      <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-sm">
-        <span class="font-semibold tabular-nums" :class="progressColor">
+      <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-surface-2 rounded-lg text-sm">
+        <span class="font-semibold tabular-nums text-accent">
           {{ masteredCount }}/{{ totalConcepts }}
         </span>
-        <span class="text-slate-400">·</span>
-        <span class="text-slate-500 dark:text-slate-400">{{ t('topic.mastered') }}</span>
-        <span class="text-slate-400">·</span>
-        <span class="font-semibold tabular-nums" :class="progressColor">{{ pct }}%</span>
-        <span class="text-slate-500 dark:text-slate-400">{{ t('topic.progress') }}</span>
+        <span class="text-content-3">·</span>
+        <span class="text-content-2">{{ t('topic.mastered') }}</span>
+        <span class="text-content-3">·</span>
+        <span class="font-semibold tabular-nums text-accent">{{ pct }}%</span>
+        <span class="text-content-2">{{ t('topic.progress') }}</span>
       </div>
 
       <!-- Domain Sections -->
       <div class="mt-8 space-y-8">
         <section v-for="domain in domainList" :key="domain.slug">
           <h2
-            class="text-lg font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 hover:underline cursor-pointer transition-colors mb-4"
+            class="text-base font-semibold text-content-1 hover:text-accent cursor-pointer transition-colors mb-4"
             @click="navigateToDomain(domain.slug)"
           >
             {{ domain.name }}
@@ -130,11 +110,11 @@ function statusBadgeClass(status: ConceptStatus): string {
             <li
               v-for="concept in domain.concepts"
               :key="concept.slug"
-              class="flex flex-wrap items-baseline gap-x-2 gap-y-1 px-3 py-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700 transition-colors"
+              class="flex flex-wrap items-baseline gap-x-2 gap-y-1 px-3 py-2.5 rounded-lg bg-surface-0 border border-border-1 hover:border-accent-muted transition-colors"
             >
               <StatusIcon :status="concept.status" class="mt-0.5" />
-              <strong class="text-sm text-slate-800 dark:text-slate-200">{{ concept.name }}</strong>
-              <span class="text-xs" :class="statusBadgeClass(concept.status)">
+              <strong class="text-sm text-content-1">{{ concept.name }}</strong>
+              <span class="text-xs text-content-3">
                 ({{ statusLabel(concept.status) }})
               </span>
               <ul
@@ -144,7 +124,7 @@ function statusBadgeClass(status: ConceptStatus): string {
                 <li
                   v-for="detail in concept.details"
                   :key="detail"
-                  class="text-xs text-slate-500 dark:text-slate-400 list-disc"
+                  class="text-xs text-content-3 list-disc"
                 >
                   {{ detail }}
                 </li>
@@ -156,16 +136,16 @@ function statusBadgeClass(status: ConceptStatus): string {
 
       <!-- Empty domains -->
       <div v-if="domainList.length === 0" class="flex flex-col items-center justify-center py-20 text-center">
-        <div class="text-5xl mb-4 opacity-80">🗂️</div>
-        <p class="text-slate-500 dark:text-slate-400">{{ t('dashboard.noTopics') }}</p>
+        <div class="text-4xl mb-4 opacity-60">🗂️</div>
+        <p class="text-content-3">{{ t('dashboard.noTopics') }}</p>
       </div>
     </div>
   </div>
 
   <!-- Topic not found -->
   <div v-else class="flex flex-col items-center justify-center py-24 text-center max-w-6xl mx-auto px-4">
-    <div class="text-5xl mb-4 opacity-80">🔍</div>
-    <p class="text-lg font-medium text-slate-700 dark:text-slate-200">
+    <div class="text-4xl mb-4 opacity-60">🔍</div>
+    <p class="text-base text-content-2">
       Topic not found: {{ slug }}
     </p>
   </div>

@@ -18,36 +18,39 @@ function backToTopic() {
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="w-[2000px] px-4 py-10">
     <!-- Back link -->
     <a
-      class="inline-flex items-center gap-1.5 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 hover:underline transition-colors mb-8 cursor-pointer"
+      class="inline-flex items-center gap-1.5 text-sm text-content-2 hover:text-accent transition-colors mb-8 cursor-pointer"
       :href="`/topics/${slug}`"
       @click.prevent="backToTopic"
     >
-      <span>←</span>
       {{ t('domain.backToMap') }}
     </a>
 
-    <!-- Tabs -->
-    <div class="flex gap-1 mb-8 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl w-fit">
+    <!-- Underline Tabs -->
+    <div class="flex gap-6 mb-8 border-b border-border-1">
       <button
-        class="px-5 py-2 text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer"
-        :class="activeTab === 'notes'
-          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
-          : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'"
+        class="relative pb-2.5 text-sm font-medium transition-colors cursor-pointer"
+        :class="activeTab === 'notes' ? 'text-accent' : 'text-content-3 hover:text-content-2'"
         @click="activeTab = 'notes'"
       >
-        📝 {{ t('domain.notes') }}
+        {{ t('domain.notes') }}
+        <span
+          v-if="activeTab === 'notes'"
+          class="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-full"
+        />
       </button>
       <button
-        class="px-5 py-2 text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer"
-        :class="activeTab === 'exercises'
-          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
-          : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'"
+        class="relative pb-2.5 text-sm font-medium transition-colors cursor-pointer"
+        :class="activeTab === 'exercises' ? 'text-accent' : 'text-content-3 hover:text-content-2'"
         @click="activeTab = 'exercises'"
       >
-        🏋️ {{ t('domain.exercises') }}
+        {{ t('domain.exercises') }}
+        <span
+          v-if="activeTab === 'exercises'"
+          class="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-full"
+        />
       </button>
     </div>
 

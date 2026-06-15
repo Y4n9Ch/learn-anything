@@ -9,13 +9,13 @@ const topics = computed(() => listAllTopics());
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="max-w-full mx-auto px-4 py-10">
     <!-- Header -->
     <div class="mb-10">
-      <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
+      <h1 class="text-2xl font-semibold text-content-1 tracking-tight">
         {{ t('dashboard.title') }}
       </h1>
-      <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm">
+      <p class="mt-1.5 text-sm text-content-3">
         {{ topics.length }} {{ topics.length === 1 ? 'topic' : 'topics' }}
       </p>
     </div>
@@ -25,20 +25,17 @@ const topics = computed(() => listAllTopics());
       v-if="topics.length === 0"
       class="flex flex-col items-center justify-center py-24 text-center"
     >
-      <div class="text-6xl mb-6 opacity-80">📚</div>
-      <p class="text-lg font-medium text-slate-700 dark:text-slate-200 mb-2">
+      <div class="text-5xl mb-6 opacity-60">📚</div>
+      <p class="text-base font-medium text-content-2 mb-2">
         {{ t('dashboard.noTopics') }}
       </p>
-      <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md">
+      <p class="text-sm text-content-3 max-w-md">
         {{ t('dashboard.startLearning') }}
       </p>
     </div>
 
     <!-- Card Grid -->
-    <div
-      v-else
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
-    >
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
       <TopicCard
         v-for="topic in topics"
         :key="topic.slug"
