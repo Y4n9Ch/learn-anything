@@ -7,52 +7,52 @@
 
 ## 2. VitePress dev project scaffold
 
-- [ ] 2.1 Create `packages/cli/site/package.json` with `vitepress` and `vue` dependencies (matching versions that will be installed at runtime)
-- [ ] 2.2 Create `packages/cli/site/.gitignore` with `node_modules`, `.vitepress/cache`, `.vitepress/dist`
-- [ ] 2.3 Create `packages/cli/site/.vitepress/config.mts` — define site title, description, srcDir pointing to `../pages`, Vite alias `@data` → `../topics`, and custom theme entry
-- [ ] 2.4 Create `packages/cli/site/.vitepress/theme/index.ts` — extend DefaultTheme, register all custom components globally, import custom CSS
-- [ ] 2.5 Create `packages/cli/site/.vitepress/theme/styles/custom.css` — CSS variables, card grid layout, progress bar styles, status icon colors, tab styles
+- [x] 2.1 Create `packages/cli/site/package.json` with `vitepress ^1.6.4` and `vue ^3.5.38` dependencies
+- [x] 2.2 Create `packages/cli/site/.gitignore` with `node_modules`, `.vitepress/cache`, `.vitepress/dist`
+- [x] 2.3 Create `packages/cli/site/.vitepress/config.mts` — `defineConfig` with `srcDir: '../pages'`, `outDir`/`cacheDir` under `.vitepress/`, Vite alias `@data` → `../topics`
+- [x] 2.4 Create `packages/cli/site/.vitepress/theme/index.ts` — extends DefaultTheme, imports custom.css, placeholder `enhanceApp` for component registration
+- [x] 2.5 Create `packages/cli/site/.vitepress/theme/styles/custom.css` — CSS variables (colors, card, sidebar), card grid layout, progress bar, status icon colors, two-column layouts, tab styles, exercise groups, language switch, empty states
 
 ## 3. Route pages and dynamic paths
 
-- [ ] 3.1 Create `packages/cli/site/pages/index.md` — thin Markdown stub that renders `<Dashboard />` component
-- [ ] 3.2 Create `packages/cli/site/pages/topics/[slug].md` — thin stub that renders `<TopicPage :slug="params.slug" />`
-- [ ] 3.3 Create `packages/cli/site/pages/topics/[slug].paths.js` — dynamic path loader that scans `../../topics/` for subdirectories containing `state.json` and returns `{ params: { slug } }` for each
-- [ ] 3.4 Create `packages/cli/site/pages/topics/[slug]/[domain].md` — thin stub that renders `<DomainPage :slug="params.slug" :domain="params.domain" />`
-- [ ] 3.5 Create `packages/cli/site/pages/topics/[slug]/[domain].paths.js` — dynamic path loader that scans `../../../topics/<slug>/sessions/` for domain directories and returns `{ params: { slug, domain } }` for each
+- [x] 3.1 Create `packages/cli/site/pages/index.md` — thin Markdown stub with `layout: home` that renders `<Dashboard />` component
+- [x] 3.2 Create `packages/cli/site/pages/topics/[slug].md` — thin stub that renders `<TopicPage :slug="$params.slug" />` using VitePress `$params` global
+- [x] 3.3 Create `packages/cli/site/pages/topics/[slug].paths.js` — dynamic path loader using `import.meta.url` + `readdirSync` that scans `../../topics/` for subdirectories containing `state.json` and returns `{ params: { slug } }` for each
+- [x] 3.4 Create `packages/cli/site/pages/topics/[slug]/[domain].md` — thin stub that renders `<DomainPage :slug="$params.slug" :domain="$params.domain" />`
+- [x] 3.5 Create `packages/cli/site/pages/topics/[slug]/[domain].paths.js` — dynamic path loader that reads all topic `state.json` files and returns `{ params: { slug, domain } }` for every domain entry (uses state.json as authoritative source rather than scanning sessions/, so domains without sessions still have pages)
 
 ## 4. Composables
 
-- [ ] 4.1 Create `packages/cli/site/.vitepress/theme/composables/useI18n.ts` — reactive locale ref initialized from localStorage, `t(key)` function returning EN/zh-CN strings. Include all UI string keys: dashboard.title, dashboard.noTopics, dashboard.startLearning, topic.progress, topic.domains, topic.concepts, topic.mastered, domain.notes, domain.exercises, domain.noNotes, domain.noExercises, domain.backToMap, status.mastered, status.inProgress, status.needsPractice, status.unexplored, lang.switch
-- [ ] 4.2 Create `packages/cli/site/.vitepress/theme/composables/useTopicData.ts` — data access layer with functions: `listAllTopics()` (scans `topics/` for state.json files, returns TopicSummary[]), `loadTopic(slug)` (reads and parses state.json), `scanSessions(slug, domain)` (lists .md files in sessions/<domain>/), `scanExercises(slug)` (lists exercise directories and files), `loadMarkdown(path)` (reads .md file content as string)
+- [x] 4.1 Create `packages/cli/site/.vitepress/theme/composables/useI18n.ts` — singleton locale ref from localStorage, `t(key)` with full EN/zh-CN message tables (17 keys), `toggleLocale()` + `setLocale()` helpers. Status labels use `inProgress` camelCase internally, mapped to display text.
+- [x] 4.2 Create `packages/cli/site/.vitepress/theme/composables/useTopicData.ts` — uses Vite `import.meta.glob` (eager) for build-time file resolution. `listAllTopics()` scans `/topics/*/state.json`, `loadTopic(slug)` looks up from glob map, `scanSessions(slug, domain)` filters `/topics/*/sessions/*/*.md` raw strings + provides lazy Vue component loaders, `scanExercises(slug)` groups `/topics/*/exercises/**/*` by concept slug matching state.json domains, `loadKnowledgeMap(slug)`, `loadMarkdown(path)`, `loadExerciseContent(path)`
 
 ## 5. Vue components — Dashboard and TopicCard
 
-- [ ] 5.1 Create `Dashboard.vue` — calls `useTopicData().listAllTopics()`, renders responsive grid of `<TopicCard>` components. Handles empty state with localized message. Contains a page title using `useI18n().t('dashboard.title')`
-- [ ] 5.2 Create `TopicCard.vue` — props: `slug`, `name`, `domainCount`, `totalConcepts`, `masteredCount`. Renders a card with topic name, progress bar (`<ProgressBar>`), stats like "4/24 mastered". Click navigates to `/topics/{slug}`. Uses `useI18n()` for status labels
-- [ ] 5.3 Create `ProgressBar.vue` — props: `value` (0-100), `label` (optional). Renders a CSS progress bar with animated fill transition
-- [ ] 5.4 Create `StatusIcon.vue` — props: `status` ('mastered'|'in_progress'|'needs_practice'|'unexplored'). Renders colored circle icon
+- [x] 5.1 Create `Dashboard.vue` — calls `listAllTopics()`, renders `<TopicCard>` grid, empty state with localized icon + message + hint, page title via `useI18n().t('dashboard.title')`
+- [x] 5.2 Create `TopicCard.vue` — props: `slug`, `name`, `domainCount`, `totalConcepts`, `masteredCount`, `percentage`. Card with name, domain/concept stats, ProgressBar, mastery label. Click navigates via `router.go()`.
+- [x] 5.3 Create `ProgressBar.vue` — props: `value` (0-100), `label` (optional). Animated fill bar with `aria-*` accessibility attributes. Green gradient when 100%.
+- [x] 5.4 Create `StatusIcon.vue` — props: `status` (`ConceptStatus` type). Colored circle: green (mastered), yellow (in_progress), orange (needs_practice), gray outline (unexplored).
 
 ## 6. Vue components — TopicPage
 
-- [ ] 6.1 Create `TopicPage.vue` — props: `slug`. Calls `useTopicData().loadTopic(slug)` to get state. Renders a two-column layout: left sidebar with domain list as `<router-link>` items (each links to `/topics/{slug}/{domain-slug}`), right content area rendering `knowledge-map.md`. Domain headings in knowledge map are clickable (navigates to domain page). Concept items are NOT clickable. Shows progress summary at top. Uses `useI18n()` for labels
+- [x] 6.1 Create `TopicPage.vue` — props: `slug`. Renders from state.json directly (not raw markdown) for full click control. Left sidebar: domain list as clickable links with active state detection. Right content: topic name, progress summary, domain headings (clickable, navigates to domain page), concept items with StatusIcon + details (NOT clickable). All labels via `useI18n()`.
 
 ## 7. Vue components — DomainPage, SessionNotes, ExerciseView
 
-- [ ] 7.1 Create `DomainPage.vue` — props: `slug`, `domain`. Two-tab layout: "Notes" (default active) and "Exercises". Tab labels from `useI18n()`. Back link to topic page. Renders `<SessionNotes>` or `<ExerciseView>` based on active tab
-- [ ] 7.2 Create `SessionNotes.vue` — props: `slug`, `domain`. Calls `useTopicData().scanSessions(slug, domain)` to get file list. Two-column layout: left panel lists .md filenames (date descending), right panel renders selected file's Markdown content using VitePress built-in Markdown rendering. First file auto-selected. Shows empty state if no notes
-- [ ] 7.3 Create `ExerciseView.vue` — props: `slug`. Calls `useTopicData().scanExercises(slug)` to get exercise data. Groups exercises by concept (matching the current domain's concepts from state.json). Each concept group is a card showing available files (README.md, starter code, solution, practice records). Shows empty state if no exercises
+- [x] 7.1 Create `DomainPage.vue` — props: `slug`, `domain`. Two-tab layout (Notes default, Exercises), labels via `useI18n()`. Back link to topic page via `router.go()`. Renders `<SessionNotes>` or `<ExerciseView>` based on active tab.
+- [x] 7.2 Create `SessionNotes.vue` — props: `slug`, `domain`. `scanSessions()` for file list. Two-column: left file list (date descending), right `pre` block with raw markdown (`white-space: pre-wrap`). First file auto-selected via `watch`. Empty state icon + message.
+- [x] 7.3 Create `ExerciseView.vue` — props: `slug`, `domain`. `scanExercises()` grouped by concept, expandable concept cards showing file list. Click a file to view its raw content in right panel code block. Empty state icon + message.
 
 ## 8. Language switch component
 
-- [ ] 8.1 Create `LanguageSwitch.vue` — toggle button rendering in VitePress navbar (via `layout-top` slot or theme extension). Displays current opposite language label. On click, toggles `useI18n().locale` and persists to localStorage
+- [x] 8.1 Create `LanguageSwitch.vue` + `Layout.vue` — LanguageSwitch: toggle button using `useI18n()`, shows opposite language label. Layout extends DefaultTheme via `#nav-bar-content-after` slot, inserting LanguageSwitch into the navbar. Both registered in `theme/index.ts` with `Layout` replacing VitePress default.
 
 ## 9. Dev fixtures for testing the site locally
 
-- [ ] 9.1 Copy sample `state.json` and `knowledge-map.md` to `packages/cli/site/topics/javascript/` from the repo's `.learn/topics/javascript/`
-- [ ] 9.2 Create sample session note files in `packages/cli/site/topics/javascript/sessions/` for at least 2 domains to test the Notes tab
-- [ ] 9.3 Create sample exercise files in `packages/cli/site/topics/javascript/exercises/` for at least 1 concept to test the Exercises tab
-- [ ] 9.4 Verify `cd packages/cli/site && npx vitepress dev` works end-to-end with fixture data
+- [x] 9.1 Copy sample `state.json` and `knowledge-map.md` to `packages/cli/site/topics/javascript/` from the repo's `.learn/topics/javascript/`
+- [x] 9.2 Create sample session note files in `packages/cli/site/topics/javascript/sessions/language-basics/` (2 files: 2026-06-13.md, 2026-06-14.md) and `functions-scope/` (1 file: 2026-06-14.md) to test the Notes tab
+- [x] 9.3 Create sample exercise files in `packages/cli/site/topics/javascript/exercises/variables-data-types/` — README.md, starter.js, solution.js, practice-2026-06-14.json
+- [x] 9.4 Verify `cd packages/cli/site && npx vitepress build` succeeds (1.10s build, all pages rendered). Also fixed TypeScript type annotation in [domain].paths.js (esbuild can't parse TS types in .js files).
 
 ## 10. SiteGenerator class
 

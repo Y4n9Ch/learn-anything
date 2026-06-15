@@ -28,7 +28,7 @@ const packageDir = join(__dirname, '..');
 /*  Exclusion rules                                                   */
 /* ------------------------------------------------------------------ */
 
-const EXCLUDED = new Set(['node_modules', 'topics', 'package-lock.json']);
+const EXCLUDED = new Set(['node_modules', 'topics', 'package-lock.json', 'pnpm-lock.yaml']);
 
 const EXCLUDED_PREFIXES = ['.vitepress/cache', '.vitepress/dist'];
 
