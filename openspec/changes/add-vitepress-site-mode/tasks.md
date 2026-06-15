@@ -1,9 +1,9 @@
 ## 1. Build script for site file bundling
 
-- [ ] 1.1 Create `packages/cli/scripts/bundle-site.ts` — Node.js script that scans `packages/cli/site/`, reads all files (excluding `node_modules/`, `topics/`, `.vitepress/cache/`, `.vitepress/dist/`, `package-lock.json`), and generates `packages/cli/src/site/files.ts` as `export const SITE_FILES: Record<string, string> = {...}`
-- [ ] 1.2 Handle TypeScript string escaping in generated output — properly escape backticks, `${` template literals, backslashes, and other special characters in file content
-- [ ] 1.3 Integrate `bundle-site.ts` into `packages/cli/build.js` so it runs before `tsc` compilation, or add a `site:bundle` script to `packages/cli/package.json`
-- [ ] 1.4 Unit test `bundle-site.ts` — verify all expected files are included, excluded paths are absent, string escaping is correct
+- [x] 1.1 Create `packages/cli/scripts/bundle-site.mjs` — Node.js ESM script that scans `packages/cli/site/`, reads all files (excluding `node_modules/`, `topics/`, `.vitepress/cache/`, `.vitepress/dist/`, `package-lock.json`), and generates `packages/cli/src/site/files.ts` as `export const SITE_FILES: Record<string, string> = {...}`
+- [x] 1.2 Handle TypeScript string escaping in generated output — properly escape backticks, `${` template literals, backslashes, and other special characters in file content
+- [x] 1.3 Integrate `bundle-site.mjs` into `packages/cli/package.json` build script — runs before `tsc` compilation via `"build": "node scripts/bundle-site.mjs && tsc"`, plus separate `"site:bundle"` script
+- [x] 1.4 Unit test `bundle-site.mjs` — verify all expected files are included, excluded paths are absent, string escaping is correct (23 tests in `test/bundle-site.test.ts`)
 
 ## 2. VitePress dev project scaffold
 
