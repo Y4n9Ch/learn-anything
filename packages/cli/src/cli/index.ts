@@ -6,8 +6,6 @@ import chalk from 'chalk';
 import { AI_TOOLS } from '../core/config.js';
 import { resolveLocale } from '../i18n/index.js';
 import { getMessages } from '../i18n/index.js';
-import { isInteractive } from '../utils/interactive.js';
-import type { LocaleMessages } from '../i18n/index.js';
 
 const program = new Command();
 const require = createRequire(import.meta.url);
@@ -25,15 +23,10 @@ program
 
 const availableToolIds = AI_TOOLS.filter((tool) => tool.skillsDir).map((tool) => tool.value);
 
-async function promptSite(localeMsgs: LocaleMessages): Promise<boolean> {
-  const siteFlagIdx = process.argv.indexOf('--site');
-  const noSiteFlagIdx = process.argv.indexOf('--no-site');
-  if (siteFlagIdx !== -1) return true;
-  if (noSiteFlagIdx !== -1) return false;
-  if (!isInteractive()) return false;
-
-  const { confirm } = await import('@inquirer/prompts');
-  return confirm({ message: localeMsgs.init.sitePrompt, default: true });
+async function generateSite(targetPath: string, force: boolean): Promise<void> {
+  const { SiteGenerator } = await import('../core/site-generator.js');
+  const generator = new SiteGenerator({ targetPath, force });
+  await generator.generate();
 }
 
 program
@@ -77,25 +70,18 @@ program
           }
         }
 
-        const enableSite = options?.site ?? (await promptSite(localeMsgs));
-
         const { InitCommand } = await import('../core/init.js');
         const initCommand = new InitCommand({
           tools: options?.tools,
           force: options?.force,
           locale: cliLocale,
           context7: options?.context7,
+          site: options?.site,
         });
         await initCommand.execute(targetPath);
 
-        if (enableSite) {
-          const { SiteGenerator } = await import('../core/site-generator.js');
-          const generator = new SiteGenerator({
-            targetPath: resolvedPath,
-            force: options?.force,
-          });
-          await generator.generate();
-          console.log(chalk.green(localeMsgs.init.siteEnabled));
+        if (initCommand.isSiteEnabled) {
+          await generateSite(resolvedPath, options?.force ?? false);
         }
       } catch (error) {
         console.log();
@@ -119,25 +105,18 @@ program
       try {
         const resolvedPath = path.resolve(targetPath);
 
-        const enableSite = options?.site ?? (await promptSite(localeMsgs));
-
         const { InitCommand } = await import('../core/init.js');
         const initCommand = new InitCommand({
           update: true,
           force: options?.force ?? true,
           locale: cliLocale,
+          site: options?.site,
         });
         await initCommand.execute(targetPath);
         console.log(chalk.green(mc.updateComplete));
 
-        if (enableSite) {
-          const { SiteGenerator } = await import('../core/site-generator.js');
-          const generator = new SiteGenerator({
-            targetPath: resolvedPath,
-            force: options?.force,
-          });
-          await generator.generate();
-          console.log(chalk.green(localeMsgs.init.siteEnabled));
+        if (initCommand.isSiteEnabled) {
+          await generateSite(resolvedPath, options?.force ?? false);
         }
       } catch (error) {
         console.log();
