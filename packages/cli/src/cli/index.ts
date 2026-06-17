@@ -77,6 +77,8 @@ program
           }
         }
 
+        const enableSite = options?.site ?? (await promptSite(localeMsgs));
+
         const { InitCommand } = await import('../core/init.js');
         const initCommand = new InitCommand({
           tools: options?.tools,
@@ -86,7 +88,6 @@ program
         });
         await initCommand.execute(targetPath);
 
-        const enableSite = options?.site ?? (await promptSite(localeMsgs));
         if (enableSite) {
           const { SiteGenerator } = await import('../core/site-generator.js');
           const generator = new SiteGenerator({
@@ -118,6 +119,8 @@ program
       try {
         const resolvedPath = path.resolve(targetPath);
 
+        const enableSite = options?.site ?? (await promptSite(localeMsgs));
+
         const { InitCommand } = await import('../core/init.js');
         const initCommand = new InitCommand({
           update: true,
@@ -127,7 +130,6 @@ program
         await initCommand.execute(targetPath);
         console.log(chalk.green(mc.updateComplete));
 
-        const enableSite = options?.site ?? (await promptSite(localeMsgs));
         if (enableSite) {
           const { SiteGenerator } = await import('../core/site-generator.js');
           const generator = new SiteGenerator({
