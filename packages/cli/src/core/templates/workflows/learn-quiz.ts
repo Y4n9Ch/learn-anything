@@ -40,13 +40,19 @@ The user may add natural-language constraints such as question types, question c
 
 ### 1. Resolve Scope
 
-- Domain name: include all concepts in the matching domain.
-- Concept name: generate a focused quiz for only that concept unless the user explicitly requests siblings.
-- \`all\`: generate one quiz per domain, sequentially by default. Use parallel workers only when the current tool supports them and doing so is safe.
+- Default generation mode is \`review\`: only generate questions for touched concepts. A touched concept satisfies at least one of: \`status !== "unexplored"\`, \`explain_count > 0\`, \`practice_count > 0\`, or \`confidence > 0\`.
+- Explicit \`diagnostic\` mode, such as \`/learn:quiz generate <domain> diagnostic\`, may cover all concepts in the requested scope even when they are unexplored.
+- Domain name in review mode: include only touched concepts in the matching domain. Do not include all concepts unless the user explicitly requests \`diagnostic\`.
+- Domain name in diagnostic mode: include all concepts in the matching domain.
+- Concept name: generate a focused quiz for only that concept unless the user explicitly requests siblings. If the concept is not touched, mark the quiz as diagnostic/preview rather than a review quiz.
+- \`all\` in review mode: generate one quiz per domain that has touched concepts, sequentially by default, and report skipped domains with no touched concepts. Use parallel workers only when the current tool supports them and doing so is safe.
+- \`all diagnostic\`: generate one quiz per domain, including unexplored concepts.
 - No scope: show available domains and ask the user to choose.
 - Unknown scope: offer close matches from state.json; do not silently add concepts.
 
-For domains with more than 10 concepts, ask whether to split the quiz before generating it.
+If a review-mode domain has no touched concepts, stop without generating files and suggest \`/learn:explain\`, \`/learn:practice\`, or an explicit \`diagnostic\` quiz.
+
+For domains with more than 10 covered concepts, ask whether to split the quiz before generating it.
 
 ### 2. Select Question Types and Difficulty
 
@@ -68,6 +74,8 @@ Choose difficulty from the covered concepts:
 | >= 0.6 | 10% easy, 40% medium, 50% hard |
 
 An explicit user difficulty overrides the adaptive distribution.
+
+Review-mode questions must stay inside touched concepts. High-confidence concepts may include a small number of deeper extension questions, but those questions must still be anchored to the touched concept and must not introduce unrelated concepts as required knowledge.
 
 Default domain quiz:
 - 5 multiple choice at 2 points each
@@ -100,6 +108,9 @@ quiz.json is the machine-readable question paper. It must not contain answers.
   "topic_slug": "javascript",
   "domain": "Functions",
   "domain_slug": "functions",
+  "mode": "review",
+  "scope_policy": "touched_concepts",
+  "covered_concepts": ["closures", "higher-order-functions"],
   "created": "2026-06-13 14:30:00",
   "total_points": 20,
   "questions": [
@@ -117,6 +128,7 @@ quiz.json is the machine-readable question paper. It must not contain answers.
 \`\`\`
 
 Each question must have a unique id, supported type, primary concept_slug, difficulty, positive points, and prompt. Only multiple-choice questions include options.
+\`mode\` must be \`review\` or \`diagnostic\`. \`scope_policy\` must be \`touched_concepts\` for review quizzes and \`all_concepts\` for diagnostic quizzes. \`covered_concepts\` must list the actual concept slugs used by the quiz.
 
 ### 5. Write answer-key.json
 
@@ -189,7 +201,7 @@ Calculate:
 
 ### 4. Write assessment.md
 
-Include the overall score, per-concept scores, per-question feedback, strengths, weak areas, and recommended next commands. Do not modify quiz.json or answer-key.json.
+Include the overall score, per-concept scores, per-question feedback, strengths, weak areas, and recommended next commands. If quiz.json mode is \`diagnostic\`, clearly label the result as a diagnostic baseline. Do not modify quiz.json or answer-key.json.
 
 ### 5. Update state.json Per Concept
 
@@ -241,6 +253,8 @@ Supported actions:
 
 For generate: read state.json, resolve the scope, create quiz.md + quiz.json + answer-key.json, and stop without modifying state.json.
 For grade: locate the quiz, collect answers from chat, write submission.json + assessment.md, update each covered concept according to its own score, then run render.mjs.
+
+Default generate mode is review: use only touched concepts (\`status !== "unexplored"\`, \`explain_count > 0\`, \`practice_count > 0\`, or \`confidence > 0\`). Use all concepts only when the user explicitly requests diagnostic mode.
 
 Keep quiz questions separate from answer keys. Produce Markdown and JSON only; do not use PDF, Word, HTML, Python renderers, hard-coded user paths, or mandatory parallel agents.`;
 

@@ -220,6 +220,20 @@ describe('Skill Template Content Quality', () => {
     expect(t.instructions).toContain('Concept score');
   });
 
+  it('quiz template should default to touched concepts before full-scope diagnostics', () => {
+    const t = getLearnQuizSkillTemplate();
+    expect(t.instructions).toContain('touched concepts');
+    expect(t.instructions).toContain('status !== "unexplored"');
+    expect(t.instructions).toContain('explain_count > 0');
+    expect(t.instructions).toContain('practice_count > 0');
+    expect(t.instructions).toContain('confidence > 0');
+    expect(t.instructions).toContain('diagnostic');
+    expect(t.instructions).toContain('Do not include all concepts unless');
+    expect(t.instructions).toContain('mode');
+    expect(t.instructions).toContain('scope_policy');
+    expect(t.instructions).toContain('covered_concepts');
+  });
+
   it('quiz template should keep generation independent from grading and external renderers', () => {
     const t = getLearnQuizSkillTemplate();
     expect(t.instructions).toContain('generation ends here');
