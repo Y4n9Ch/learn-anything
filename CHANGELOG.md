@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-06-18
+
+### Added
+
+- **File-to-URL sync**: Selecting a file in the sidebar now updates the browser URL (`?file=...&tab=...`), enabling shareable, bookmarkable links to specific notes and exercises.
+- **Tab state persistence**: The sidebar tab selection (topics/exercises) persists across page reloads via the URL query parameter.
+
+### Changed
+
+- **Smart hot reload**: File changes no longer trigger a full page reload. Instead, a reactive `dataVersion` mechanism triggers component re-renders while preserving scroll position and UI state.
+- **Tree auto-expand on reload**: The sidebar navigation tree now automatically expands to the node containing the currently selected file on page load, instead of always expanding the first domain.
+
+### Fixed
+
+- **Hot reload UX**: Eliminated disruptive full-page refreshes when editing notes or exercises. The page stays stable with scroll position preserved.
+- **Sidebar state loss**: Fixed sidebar tab and tree expansion state being lost on page reload.
+
 ## [1.1.0] - 2026-06-18
 
 ### Added
@@ -138,7 +155,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Locale support: English (`en`) and Chinese (`zh-CN`).
 - MIT License.
 
-[Unreleased]: https://github.com/ChenChenyaqi/learn-anything/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/ChenChenyaqi/learn-anything/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/ChenChenyaqi/learn-anything/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/ChenChenyaqi/learn-anything/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/ChenChenyaqi/learn-anything/compare/v0.5.1...v1.0.0
 [0.5.1]: https://github.com/ChenChenyaqi/learn-anything/compare/v0.5.0...v0.5.1
