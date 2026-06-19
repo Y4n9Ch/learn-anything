@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-06-19
+
+### Added
+
+- **Heading search (⌘K / Ctrl+K)**: A VitePress-style command palette opens via keyboard shortcut or sidebar button, letting users jump to any heading across session notes, the knowledge map, and exercise docs. The server builds a lazy, cached search index (`/api/search-index`) that refreshes on file change; the client filters locally with no per-keystroke requests.
+- **Heading anchor links**: Every rendered heading now carries a deep-linkable `id` and a hover-revealed `#` permalink (brand-accent color). Clicking the anchor or entering a `#slug` URL scrolls smoothly to the section, surviving async content loads and page refreshes. CJK heading text is preserved in slugs.
+- **Table of contents outline**: A right-side sticky TOC panel (visible at `xl` breakpoint and above) lists `h2`/`h3` headings for the current note or knowledge map. An `IntersectionObserver` scroll-spy highlights the active section; clicking an item scrolls to it and syncs the URL hash.
+
+### Fixed
+
+- **Dark-mode scrollbar colors**: Native scrollbars (sidebar tree, search modal, code blocks) now adapt to dark mode via CSS-variable-based `scrollbar-color` and `::-webkit-scrollbar` rules, instead of showing the light system default.
+- **Heading anchor accessibility**: The permalink anchor switched from `aria-hidden="true"` to `aria-label` + `tabindex="-1"`, resolving a browser warning when the anchor receives focus on click.
+
 ## [1.2.2] - 2026-06-19
 
 ### Fixed
@@ -195,7 +208,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Locale support: English (`en`) and Chinese (`zh-CN`).
 - MIT License.
 
-[Unreleased]: https://github.com/ChenChenyaqi/learn-anything/compare/v1.2.2...HEAD
+[Unreleased]: https://github.com/ChenChenyaqi/learn-anything/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/ChenChenyaqi/learn-anything/compare/v1.2.2...v1.3.0
 [1.2.2]: https://github.com/ChenChenyaqi/learn-anything/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/ChenChenyaqi/learn-anything/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/ChenChenyaqi/learn-anything/compare/v1.1.1...v1.2.0
