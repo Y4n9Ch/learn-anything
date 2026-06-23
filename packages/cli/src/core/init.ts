@@ -144,6 +144,12 @@ export class InitCommand {
         chalk.dim('    — Visualize learning state as knowledge map heatmap'),
       ),
     );
+    console.log(
+      cmd(
+        chalk.cyan('/learn:quiz <generate|grade> ...'),
+        chalk.dim(' — Generate adaptive quizzes or grade submitted answers'),
+      ),
+    );
     console.log('');
 
     if (this.context7Enabled) {
@@ -218,11 +224,12 @@ export class InitCommand {
 
       const scriptsDir = path.join(skillDir, 'scripts');
 
-      // topic / explain / practice → utils.mjs + render.mjs
+      // topic / explain / practice / quiz → utils.mjs + render.mjs
       if (
         entry.dirName === 'learn-anything-topic' ||
         entry.dirName === 'learn-anything-explain' ||
-        entry.dirName === 'learn-anything-practice'
+        entry.dirName === 'learn-anything-practice' ||
+        entry.dirName === 'learn-anything-quiz'
       ) {
         await FileSystemUtils.writeFile(
           path.join(scriptsDir, 'utils.mjs'),
@@ -282,7 +289,7 @@ export class InitCommand {
   }
 }
 
-const DOC_VERIFICATION_WORKFLOWS = new Set(['topic', 'explain', 'practice']);
+const DOC_VERIFICATION_WORKFLOWS = new Set(['topic', 'explain', 'practice', 'quiz']);
 
 function isDocVerificationTemplate(workflowId: string): boolean {
   return DOC_VERIFICATION_WORKFLOWS.has(workflowId);
