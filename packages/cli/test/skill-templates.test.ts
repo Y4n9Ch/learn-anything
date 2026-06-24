@@ -207,42 +207,41 @@ describe('Skill Template Content Quality', () => {
     expect(t.instructions).toContain('heatmap');
   });
 
-  it('quiz template should define a portable two-stage assessment workflow', () => {
+  it('quiz template should define a single-flow reusable-deck workflow', () => {
     const t = getLearnQuizSkillTemplate();
-    expect(t.instructions).toContain('/learn:quiz generate <concept-or-domain>');
-    expect(t.instructions).toContain('/learn:quiz grade <quiz-id>');
-    expect(t.instructions).toContain('quiz.md');
+    expect(t.instructions).toContain('/learn:quiz <concept');
     expect(t.instructions).toContain('quiz.json');
-    expect(t.instructions).toContain('answer-key.json');
-    expect(t.instructions).toContain('submission.json');
-    expect(t.instructions).toContain('assessment.md');
-    expect(t.instructions).toContain('<domain-slug>-quiz-YYYYMMDD-HHmmss');
-    expect(t.instructions).toContain('./.learn/topics/<topic-name>/quizzes/<quiz-id>/');
-    expect(t.instructions).toContain('./.learn/topics/*/quizzes/<quiz-id>/');
-    expect(t.instructions).not.toContain('exercises/<domain-slug>/<quiz-id>');
-    expect(t.instructions).not.toContain('exercises/*/<quiz-id>');
-    expect(t.instructions).toContain('Concept score');
+    expect(t.instructions).toContain('quizzes/<concept-slug>/');
+    expect(t.instructions).toContain('gradeable');
+    expect(t.instructions).toContain('accepted_answers');
+    expect(t.instructions).toContain('multiple_choice');
+    expect(t.instructions).toContain('true_false');
+    expect(t.instructions).toContain('fill_in_blank');
+    expect(t.instructions).toContain('error_correction');
+    expect(t.instructions).toContain('validate-quiz.mjs');
+    expect(t.instructions).not.toContain('answer-key.json');
+    expect(t.instructions).not.toContain('submission.json');
+    expect(t.instructions).not.toContain('assessment.md');
+    expect(t.instructions).not.toContain('scope_policy');
+    expect(t.instructions).not.toContain('/learn:quiz generate');
+    expect(t.instructions).not.toContain('/learn:quiz grade');
   });
 
-  it('quiz template should default to touched concepts before full-scope diagnostics', () => {
+  it('quiz template should scope to touched concepts and update state only after grading', () => {
     const t = getLearnQuizSkillTemplate();
-    expect(t.instructions).toContain('touched concepts');
+    expect(t.instructions).toContain('touched concept');
     expect(t.instructions).toContain('status !== "unexplored"');
     expect(t.instructions).toContain('explain_count > 0');
     expect(t.instructions).toContain('practice_count > 0');
     expect(t.instructions).toContain('confidence > 0');
-    expect(t.instructions).toContain('diagnostic');
-    expect(t.instructions).toContain('Do not include all concepts unless');
-    expect(t.instructions).toContain('mode');
-    expect(t.instructions).toContain('scope_policy');
-    expect(t.instructions).toContain('covered_concepts');
+    expect(t.instructions).toContain('practice_count +1');
+    expect(t.instructions).toContain('mastered');
+    expect(t.instructions).toContain('batch');
   });
 
-  it('quiz template should keep generation independent from grading and external renderers', () => {
+  it('quiz template should keep deck-write independent from state updates and portable', () => {
     const t = getLearnQuizSkillTemplate();
-    expect(t.instructions).toContain('generation ends here');
-    expect(t.instructions).toContain('Do not modify state.json');
-    expect(t.instructions).toContain('Do not run render.mjs');
+    expect(t.instructions).toContain('never changes state.json');
     expect(t.instructions).not.toContain('generate_html.py');
     expect(t.instructions).not.toContain('generate_pdf.py');
     expect(t.instructions).not.toContain('generate_docx.py');

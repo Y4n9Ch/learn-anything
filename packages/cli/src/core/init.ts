@@ -146,8 +146,8 @@ export class InitCommand {
     );
     console.log(
       cmd(
-        chalk.cyan('/learn:quiz <generate|grade> ...'),
-        chalk.dim(' — Generate adaptive quizzes or grade submitted answers'),
+        chalk.cyan('/learn:quiz <concept-name>'),
+        chalk.dim('   — Quick text Q&A quiz (saved for re-practice)'),
       ),
     );
     console.log('');
@@ -238,6 +238,13 @@ export class InitCommand {
         await FileSystemUtils.writeFile(
           path.join(scriptsDir, 'render.mjs'),
           this.readCompiledScript('render.mjs'),
+        );
+      }
+      // quiz -> validate-quiz.mjs (deck validation)
+      if (entry.dirName === 'learn-anything-quiz') {
+        await FileSystemUtils.writeFile(
+          path.join(scriptsDir, 'validate-quiz.mjs'),
+          this.readCompiledScript('validate-quiz.mjs'),
         );
       }
       // topic -> init-sessions.mjs
