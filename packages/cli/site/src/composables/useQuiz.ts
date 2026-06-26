@@ -396,3 +396,134 @@ export function useQuizSession(quizDeck: QuizDeck): {
     reset,
   };
 }
+
+/* ================================================================== */
+/*  SM-2 Spaced Repetition Integration                                */
+/* ================================================================== */
+
+import {
+  calculateNextReview,
+  isDueForReview,
+  getReviewPriority,
+  getReviewStatus,
+  type ReviewRecord,
+} from './useSpacedRepetition';
+
+export type { ReviewRecord };
+
+/* ------------------------------------------------------------------ */
+/*  Review record storage                                              */
+/* ------------------------------------------------------------------ */
+
+interface ReviewStorage {
+  [questionId: string]: ReviewRecord;
+}
+
+/**
+ * Load review records for a quiz from localStorage.
+ */
+export function loadReviewRecords(topicSlug: string, conceptSlug: string): ReviewStorage {
+  if (typeof localStorage === 'undefined') return {};
+  const key = `learn-anything-review-${topicSlug}-${conceptSlug}`;
+  try {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : {};
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Save a review record for a question.
+ */
+export function saveReviewRecord(
+  topicSlug: string,
+  conceptSlug: string,
+  questionId: string,
+  record: ReviewRecord,
+): void {
+  if (typeof localStorage === 'undefined') return;
+  const key = `learn-anything-review-${topicSlug}-${conceptSlug}`;
+  const existing = loadReviewRecords(topicSlug, conceptSlug);
+  existing[questionId] = record;
+  localStorage.setItem(key, JSON.stringify(existing));
+}
+
+/* ------------------------------------------------------------------ */
+/*  Question priority sorting                                          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Sort questions by review priority:
+ * 1. Due for review (overdue) — higher priority
+ * 2. Lower ease factor (harder) — higher priority
+ * 3. Never reviewed — medium priority
+ * 4. Recently reviewed — lower priority
+ */
+export function sortQuestionsByPriority(
+  questions: QuizQuestion[],
+  reviewRecords: ReviewStorage,
+): QuizQuestion[] {
+  return [...questions].sort((a, b) => {
+    const recordA = reviewRecords[a.id];
+    const recordB = reviewRecords[b.id];
+
+    // Both have records
+    if (recordA && recordB) {
+      const dueA = isDueForReview(recordA);
+      const dueB = isDueForReview(recordB);
+
+      if (dueA && !dueB) return -1;
+      if (!dueA && dueB) return 1;
+
+      // Both due or both not due — sort by priority
+      return getReviewPriority(recordB) - getReviewPriority(recordA);
+    }
+
+    // One has record, one doesn't
+    if (recordA && !recordB) return -1;
+    if (!recordA && recordB) return 1;
+
+    // Neither has record — keep original order
+    return 0;
+  });
+}
+
+/**
+ * Get review status for a question (for display).
+ */
+export function getQuestionReviewStatus(
+  questionId: string,
+  reviewRecords: ReviewStorage,
+): { key: string; params?: Record<string, number> } | null {
+  const record = reviewRecords[questionId];
+  if (!record) return null;
+  return getReviewStatus(record);
+}
+
+/**
+ * Check if a question is due for review.
+ */
+export function isQuestionDueForReview(questionId: string, reviewRecords: ReviewStorage): boolean {
+  const record = reviewRecords[questionId];
+  if (!record) return false;
+  return isDueForReview(record);
+}
+
+/**
+ * Update review record after answering a question.
+ * @param quality - 0-5 (0=blackout, 5=perfect)
+ */
+export function updateReviewAfterAnswer(
+  topicSlug: string,
+  conceptSlug: string,
+  questionId: string,
+  isCorrect: boolean,
+  existingRecords: ReviewStorage,
+): ReviewRecord {
+  const quality = isCorrect ? 4 : 1;
+  const existingRecord = existingRecords[questionId] || null;
+  const newRecord = calculateNextReview(quality, existingRecord);
+  saveReviewRecord(topicSlug, conceptSlug, questionId, newRecord);
+  return newRecord;
+}

@@ -79,7 +79,12 @@ export type I18nKey =
   | 'lang.switch'
   | 'theme.switch'
   | 'loading.note'
-  | 'toc.title';
+  | 'toc.title'
+  | 'stats.overall'
+  | 'stats.domains'
+  | 'stats.reviewNeeded'
+  | 'stats.allCaughtUp'
+  | 'path.noData';
 
 type Messages = Record<I18nKey, string>;
 
@@ -162,6 +167,11 @@ const messages: Record<Locale, Messages> = {
     'search.shortcutNonMac': 'Ctrl K',
     'loading.note': 'Opening note…',
     'toc.title': 'On this page',
+    'stats.overall': 'Overall Progress',
+    'stats.domains': 'Domains',
+    'stats.reviewNeeded': 'Review Needed',
+    'stats.allCaughtUp': 'All caught up!',
+    'path.noData': 'No data available',
   },
   'zh-CN': {
     'dashboard.title': '学习仪表盘',
@@ -237,6 +247,11 @@ const messages: Record<Locale, Messages> = {
     'search.shortcutNonMac': 'Ctrl K',
     'loading.note': '正在打开笔记',
     'toc.title': '本页内容',
+    'stats.overall': '总体进度',
+    'stats.domains': '领域',
+    'stats.reviewNeeded': '待复习',
+    'stats.allCaughtUp': '全部完成！',
+    'path.noData': '暂无数据',
   },
 };
 

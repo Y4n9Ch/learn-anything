@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from '../composables/useI18n';
 import { listAllTopics } from '../composables/useTopicData';
+import StatsPanel from './StatsPanel.vue';
 
 const router = useRouter();
 const { t } = useI18n();
@@ -19,9 +20,12 @@ function goToTopic(slug: string) {
     <h1 class="mb-4">
       {{ t('dashboard.title') }}
     </h1>
-    <p v-if="topics.length > 0" class="text-sm text-text-3 mb-10">
+    <p v-if="topics.length > 0" class="text-sm text-text-3 mb-6">
       {{ topics.length }} {{ topics.length === 1 ? 'topic' : 'topics' }}
     </p>
+
+    <!-- Stats Panel -->
+    <StatsPanel v-if="topics.length > 0" class="mb-8" />
 
     <!-- Empty state -->
     <div

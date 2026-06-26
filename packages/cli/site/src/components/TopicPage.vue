@@ -4,6 +4,7 @@ import { useI18n } from '../composables/useI18n';
 import { loadTopic, loadKnowledgeMap, getDataVersion } from '../composables/useTopicData';
 import ContentViewer from './ContentViewer.vue';
 import TocLayout from './TocLayout.vue';
+import PathVisualization from './PathVisualization.vue';
 import type { SelectedFilePayload } from '../composables/useTopicData';
 import { renderMarkdown } from '../utils/markdown';
 
@@ -30,6 +31,9 @@ const knowledgeMapHtml = computed(() => {
 const selectedFile = inject<Ref<SelectedFilePayload | null>>('topicSelectedFile', ref(null));
 
 const showKnowledgeMap = computed(() => !selectedFile.value);
+
+/* --- View toggle: list vs path --- */
+const viewMode = ref<'list' | 'path'>('list');
 </script>
 
 <template>
@@ -43,7 +47,33 @@ const showKnowledgeMap = computed(() => !selectedFile.value);
   <div v-else>
     <!-- Knowledge Map (default) — VitePress style: h1 outside prose, content flows naturally -->
     <template v-if="showKnowledgeMap">
-      <TocLayout :html="knowledgeMapHtml" />
+      <!-- View toggle buttons -->
+      <div class="flex items-center gap-2 mb-4">
+        <button
+          class="px-3 py-1.5 text-xs rounded-lg border transition-colors"
+          :class="viewMode === 'list'
+            ? 'bg-(--color-brand-2) text-white border-(--color-brand-2)'
+            : 'border-(--color-divider) text-(--color-text-2) hover:border-(--color-brand-2)'"
+          @click="viewMode = 'list'"
+        >
+          列表视图
+        </button>
+        <button
+          class="px-3 py-1.5 text-xs rounded-lg border transition-colors"
+          :class="viewMode === 'path'
+            ? 'bg-(--color-brand-2) text-white border-(--color-brand-2)'
+            : 'border-(--color-divider) text-(--color-text-2) hover:border-(--color-brand-2)'"
+          @click="viewMode = 'path'"
+        >
+          路径视图
+        </button>
+      </div>
+
+      <!-- List view -->
+      <TocLayout v-if="viewMode === 'list'" :html="knowledgeMapHtml" />
+
+      <!-- Path visualization view -->
+      <PathVisualization v-else :slug="slug" />
     </template>
 
     <!-- File content -->
